@@ -1,19 +1,21 @@
 import classes from "./LoginView.module.css";
 import { useContext, useRef } from "react";
 import { AuthContext } from "../../store/auth";
-import { AppContext } from "../../store/app";
+import { useNavigate } from "react-router-dom";
+import DarkButton from "../UI/DarkButton";
+import Header from "../UI/Header";
+import InputGroup from "../UI/InputGroup";
 
 const LoginView: React.FC = () => {
   const userInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
   const authCtx = useContext(AuthContext);
-  const appCtx = useContext(AppContext)
+  const navigate = useNavigate();
 
   const clickHandler = () => {
-    appCtx.changeCurrentView("NewAccountView");
+    navigate("/register");
   };
 
-  
   const onLoginSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     authCtx.login(userInput.current!.value, passwordInput.current!.value);
@@ -21,21 +23,18 @@ const LoginView: React.FC = () => {
 
   return (
     <>
-      <p className={classes.header}>Login</p>
+      <Header>Login</Header>
       <form onSubmit={onLoginSubmit} className={classes.form}>
-        <div className={classes["input-group"]}>
-          <label htmlFor="user">E-Mail</label>
-          <input ref={userInput} id="user" type="text"></input>
-        </div>
-        <div className={classes["input-group"]}>
-          <label htmlFor="password">Password</label>
-          <input ref={passwordInput} id="password" type="password"></input>
-        </div>
-        <button className={classes.button}>Login</button>
+        <InputGroup id="user" label="E-Mail" type="text" pref={userInput} />
+        <InputGroup
+          id="password"
+          label="Password"
+          type="password"
+          pref={passwordInput}
+        />
+        <DarkButton>Login</DarkButton>
       </form>
-      <button onClick={clickHandler} className={classes.button}>
-        New Account
-      </button>
+      <DarkButton onClick={clickHandler}>New Account</DarkButton>
     </>
   );
 };

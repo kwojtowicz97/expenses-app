@@ -8,6 +8,7 @@ import { AppContext } from "./store/app";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { AuthContext } from "./store/auth";
 
+
 function App() {
   const appCtx = useContext(AppContext);
   const authCtx = useContext(AuthContext)

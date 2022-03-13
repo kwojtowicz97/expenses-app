@@ -1,6 +1,9 @@
 import classes from "./CreateUserView.module.css"
 import { useContext, useRef } from "react";
 import { AuthContext } from "../../store/auth";
+import DarkButton from "../UI/DarkButton";
+import Header from "../UI/Header";
+import InputGroup from "../UI/InputGroup";
 
 const NewAccountView: React.FC = () => {
   const emailInput = useRef<HTMLInputElement>(null);
@@ -23,21 +26,22 @@ const NewAccountView: React.FC = () => {
 
     return (
       <div className={classes.container}>
-        <p className={classes.header}>New Account</p>
+        <Header>New Account</Header>
         <form onSubmit={clickHandler} className={classes.form}>
-          <div className={classes["input-group"]}>
-            <label htmlFor="user">E-Mail</label>
-            <input ref={emailInput} id="user" type="text"></input>
-          </div>
-          <div className={classes["input-group"]}>
-            <label htmlFor="password">Password</label>
-            <input ref={passwordInput} id="password" type="password"></input>
-          </div>
-          <div className={classes["input-group"]}>
-            <label htmlFor="password">Confirm Password</label>
-            <input ref={repeatPasswordInput} id="rep-password" type="password"></input>
-          </div>
-          <button className={classes.button}>Create</button>
+          <InputGroup id="user" label="E-Mail" pref={emailInput} type="text" />
+          <InputGroup
+            id="password"
+            label="Password"
+            pref={passwordInput}
+            type="password"
+          />
+          <InputGroup
+            id="rep-password"
+            label="Confirm Password"
+            pref={repeatPasswordInput}
+            type="password"
+          />
+          <DarkButton>Create</DarkButton>
         </form>
       </div>
     );
