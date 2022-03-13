@@ -1,0 +1,13 @@
+.RoomButtonGroup {
+  font-size: 1.6rem;
+  padding: 5%;
+  position: relative;
+  margin-bottom: 30%;
+  height: 85%;
+  overflow: scroll;
+  box-sizing: border-box;
+}
+
+
+
+.RoomButtonGroup::-webkit-scrollbar { width: 0 !important }

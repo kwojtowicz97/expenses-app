@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import DarkButton from "../UI/DarkButton";
 import Header from "../UI/Header";
 import InputGroup from "../UI/InputGroup";
+import { Navigate } from "react-router-dom";
 
 const LoginView: React.FC = () => {
   const userInput = useRef<HTMLInputElement>(null);
@@ -23,6 +24,7 @@ const LoginView: React.FC = () => {
 
   return (
     <>
+        {authCtx.isLoggedIn && <Navigate to={"/"}/>}
       <Header>Login</Header>
       <form onSubmit={onLoginSubmit} className={classes.form}>
         <InputGroup id="user" label="E-Mail" type="text" pref={userInput} />
