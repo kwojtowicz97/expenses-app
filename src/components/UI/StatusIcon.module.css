@@ -1,0 +1,17 @@
+.dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    right: 10px;
+    top: 10px;
+
+    border-radius: 100%;
+}
+
+.logged {
+    background: green;
+}
+
+.not-logged {
+    background: red;
+}
