@@ -1,19 +1,21 @@
 import LoginView from "./components/loginView/LoginView";
-import { useState, useContext } from "react";
-import { AuthContext } from "./store/auth";
+import { useContext } from "react";
 import StatusIcon from "./components/UI/StatusIcon";
-import Modal from "./components/UI/modal";
+import Modal from "./components/UI/Modal";
+import classes from "./App.module.css"
+import NewAccountView from "./components/newAccountView/CreateUserView";
+import { AppContext } from "./store/app";
 
 function App() {
-  const [currentView, setCurrentView] = useState("LoginView");
-  const authCtx = useContext(AuthContext);
+  const appCtx = useContext(AppContext)
 
   return (
-    <> 
-    {authCtx.isError && <Modal/>}
+    <div className={classes.container}>
+      {appCtx.isError && <Modal />}
       <StatusIcon />
-      {currentView === "LoginView" && <LoginView />}
-    </>
+      {appCtx.currentView === "LoginView" && <LoginView />}
+      {appCtx.currentView === "NewAccountView" && <NewAccountView />}
+    </div>
   );
 }
 

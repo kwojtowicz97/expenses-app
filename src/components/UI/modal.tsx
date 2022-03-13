@@ -1,9 +1,9 @@
 import classes from "./Modal.module.css"
 import { useContext } from "react"
-import { AuthContext } from "../../store/auth"
+import { AppContext } from "../../store/app"
 
 const Modal:React.FC = () => {
-    const authCtx = useContext(AuthContext)
-    return <p className={classes.modal}>{authCtx.error}</p>
+    const appCtx = useContext(AppContext)
+    return <p className={classes.modal}>{appCtx.error.replace("_", " ")}</p>;
 }
 export default Modal  

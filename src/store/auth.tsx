@@ -1,68 +1,58 @@
-import React, { Component, createContext, useState } from "react";
+import React, { useState, useContext } from "react";
+import { AppContext } from "./app";
 
 export const AuthContext = React.createContext({
-  currentView: "",
   token: "",
   name: "",
   isLoggedIn: false,
-  isError: false,
-  error: "",
-  setError: (error: string) => {},
-  changeCurrentView: (viewName: string) => {},
   login: (user: string, password: string) => {},
 });
 
 const AuthProvider: React.FC = (props) => {
-  const [currentView, setCurrenView] = useState("LoginView");
+  const appCtx = useContext(AppContext);
   const [token, setToken] = useState("null");
   const [name, setName] = useState("null");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isError, setIsError] = useState(false)
-  const [error, setError] = useState("")
-
-  const changeCurrentView = (viewName: string) => {
-    setCurrenView(viewName);
-  };
-
 
   const login = (user: string, password: string) => {
     const URL =
       "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBHb6MBKoNIMBlB-VG-n6lhJBDVCFVMebw";
     fetch(URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify({
         email: user,
         password: password,
         returnSecureToken: true,
       }),
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
       .then((response) => {
+        // setIsLoading(false);
         if (response.ok) {
+          return response.json();
+        } else {
           return response.json().then((data) => {
-            setToken(data?.idToken);
-            setName(data.email);
-            setIsLoggedIn(true);
-            setIsError(false)
+            const errorMessage = data.error.message;
+            throw new Error(errorMessage);
           });
         }
-        return response.json().then((data) => {
-          const errorMessage = data.error.message;
-          throw new Error(errorMessage);
-        });
+      })
+      .then((data) => {
+        setToken(data.idToken);
+        setName(data.email);
+        setIsLoggedIn(true);
+        appCtx.setIsError(false);
       })
       .catch((error) => {
-          setIsError(true)
-          setError(error.message)
-      });;
+        appCtx.setIsError(true);
+        appCtx.setError(error.message);
+      });
   };
 
   return (
-    <AuthContext.Provider
-      value={{ currentView, token, name, isLoggedIn, changeCurrentView, login, setError,error,  isError }}
-    >
+    <AuthContext.Provider value={{ token, name, isLoggedIn, login }}>
       {props.children}
     </AuthContext.Provider>
   );
