@@ -25,7 +25,7 @@ const NewAccountView: React.FC = () => {
     };
 
     return (
-      <div className={classes.container}>
+      <>
         <Header>New Account</Header>
         <form onSubmit={clickHandler} className={classes.form}>
           <InputGroup id="user" label="E-Mail" pref={emailInput} type="text" />
@@ -43,7 +43,7 @@ const NewAccountView: React.FC = () => {
           />
           <DarkButton>Create</DarkButton>
         </form>
-      </div>
+      </>
     );
 }
 

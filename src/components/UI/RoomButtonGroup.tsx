@@ -1,12 +1,17 @@
 import LigthButton from "./LightButton";
 import classes from "./RoomButtonGroup.module.css";
+import { useContext } from "react";
+import { AppContext } from "../../store/app";
 
-const RoomButtonGroup: React.FC = () => {
+const RoomButtonGroup: React.FC<{rooms: {room?: {name: string}}}> = (props) => {
+
+  const appCtx = useContext(AppContext)
+
   return (
     <div className={classes.RoomButtonGroup}>
-      <LigthButton owner>Sopot 2022</LigthButton>
-      <LigthButton>Szczawnica 2021</LigthButton>
-      <LigthButton>Bieszczady 2021</LigthButton>
+      {Object.values(props.rooms).map((room: {name: string}, index) => (
+        <LigthButton key={index} room={room} />
+      ))}
     </div>
   );
 };

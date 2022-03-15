@@ -1,26 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 
 export const AppContext = React.createContext({
-  currentView: "",
   isError: false,
   error: "",
+  rooms: {},
+  room: {name: ""},
   setError: (error: string) => {},
   setIsError: (bool: boolean) => {},
-  changeCurrentView: (viewName: string) => {},
+  fetchRooms: () => {},
+  setRoom: (room: {name:string}) => {}
 });
 
 const AppProvider: React.FC = (props) => {
-  const [currentView, setCurrenView] = useState("LoginView");
   const [isError, setIsError] = useState(false)
-  const [error, setError] = useState("s")
+  const [error, setError] = useState("")
+  const [rooms, setRooms] = useState({});
+  const [room, setRoom] = useState({name: ""})
 
-  const changeCurrentView = (viewName: string) => {
-    setCurrenView(viewName);
-  };
+    useEffect(() => console.log(room), [room])
+
+
+  const fetchRooms = () => {
+    fetch(
+      "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json"
+    ).then(response => {
+      if (response.ok) {
+        return response.json()
+      }
+      return Promise.reject(response)
+  }).then(items => {
+    setRooms(items)
+  })}
 
   return (
     <AppContext.Provider
-      value={{ currentView,error,  isError, changeCurrentView, setError, setIsError }}
+      value={{error,  isError, rooms, room, setError, setIsError, fetchRooms, setRoom }}
     >
       {props.children}
     </AppContext.Provider>
