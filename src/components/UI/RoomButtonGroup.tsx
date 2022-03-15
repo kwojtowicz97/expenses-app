@@ -2,8 +2,9 @@ import LigthButton from "./LightButton";
 import classes from "./RoomButtonGroup.module.css";
 import { useContext } from "react";
 import { AppContext } from "../../store/app";
+import { Room } from "../../@types/room";
 
-const RoomButtonGroup: React.FC<{rooms: {room?: {name: string}}}> = (props) => {
+const RoomButtonGroup: React.FC<{rooms: Room[]}> = (props) => {
 
   const appCtx = useContext(AppContext)
 

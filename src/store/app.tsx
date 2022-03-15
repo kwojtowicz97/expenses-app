@@ -1,22 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { Room, AppContextType } from "../@types/room";
 
 
-export const AppContext = React.createContext({
-  isError: false,
-  error: "",
-  rooms: {},
-  room: {name: ""},
-  setError: (error: string) => {},
-  setIsError: (bool: boolean) => {},
-  fetchRooms: () => {},
-  setRoom: (room: {name:string}) => {}
-});
+export const AppContext = React.createContext<AppContextType | null>(null);
 
 const AppProvider: React.FC = (props) => {
   const [isError, setIsError] = useState(false)
-  const [error, setError] = useState("")
-  const [rooms, setRooms] = useState({});
-  const [room, setRoom] = useState({name: ""})
+  const [error, setError] = useState(null)
+  const [rooms, setRooms] = useState<Room[] | null>([]);
+  const [room, setRoom] = useState<Room | null>(null)
 
     useEffect(() => console.log(room), [room])
 
@@ -30,7 +22,7 @@ const AppProvider: React.FC = (props) => {
       }
       return Promise.reject(response)
   }).then(items => {
-    setRooms(items)
+    setRooms(Object.values(items))
   })}
 
   return (

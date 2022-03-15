@@ -41,7 +41,7 @@ function App() {
           <Route
             path="/room"
             element={
-              appCtx.room.name !== "" ? <RoomView /> : <Navigate to="/" />
+              appCtx.room ? <RoomView /> : <Navigate to="/" />
             }
           />
         </Routes>
