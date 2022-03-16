@@ -13,17 +13,25 @@ const AppProvider: React.FC = (props) => {
     useEffect(() => console.log(room), [room])
 
 
-  const fetchRooms = () => {
-    fetch(
-      "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json"
-    ).then(response => {
-      if (response.ok) {
-        return response.json()
-      }
-      return Promise.reject(response)
-  }).then(items => {
-    setRooms(Object.values(items))
-  })}
+  // const fetchRooms = () => {
+  //   fetch(
+  //     "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json"
+  //   ).then(response => {
+  //     if (response.ok) {
+  //       return response.json()
+  //     }
+  //     return Promise.reject(response)
+  // }).then(items => {
+  //   setRooms(Object.values(items))
+  // })}
+
+ const fetchRooms = async () => {
+   try {
+    const response = await fetch("https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json")
+    const items = await Object.values(response.json())
+    setRooms(items)
+   } catch {}
+ }
 
   return (
     <AppContext.Provider
