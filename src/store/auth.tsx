@@ -1,19 +1,13 @@
 import React, { useState, useContext } from "react";
 import { AppContext } from "./app";
+import { AuthContextType } from "../@types/auth";
 
-export const AuthContext = React.createContext({
-  token: "",
-  name: "",
-  isLoggedIn: false,
-  login: (user: string, password: string) => {},
-  createUser: (user: string, password: string, bool: boolean) => {},
-  checkAndLogin: () => {}
-});
+export const AuthContext = React.createContext<AuthContextType | null>(null);
 
 const AuthProvider: React.FC = (props) => {
   const appCtx = useContext(AppContext);
-  const [token, setToken] = useState("null");
-  const [name, setName] = useState("null");
+  const [token, setToken] = useState(null);
+  const [name, setName] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // const createUser = (user: string, password: string) => {
@@ -54,6 +48,12 @@ const AuthProvider: React.FC = (props) => {
 
   // };
 
+  const logout = () => {
+    setName(null)
+    setToken(null)
+    setIsLoggedIn(false)
+  }
+
   const createUser = async (user: string, password: string) => {
     try {
       const URL = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBHb6MBKoNIMBlB-VG-n6lhJBDVCFVMebw";
@@ -68,12 +68,16 @@ const AuthProvider: React.FC = (props) => {
                 "Content-Type": "application/json",
               },
             })
+      if (!response.ok) {
+        const data = await response.json()
+        throw new Error(data)
+      }
       const data = await response.json()
       setToken(data.idToken);
       setName(data.email);
       setIsLoggedIn(true);
       appCtx.setIsError(false);
-    } catch (err) {}
+    } catch (err) {console.log(err)}
   }
 
   // const login = (user: string, password: string) => {
@@ -135,7 +139,11 @@ const AuthProvider: React.FC = (props) => {
           "Content-Type": "application/json",
         },
       })
-      const data = response.json()
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error.message);
+      }
+      const data = await response.json();
       setToken(data.idToken);
       setName(data.email);
       setIsLoggedIn(true);
@@ -148,7 +156,7 @@ const AuthProvider: React.FC = (props) => {
           isLoggedIn: true
         })
       );
-    } catch (err) {}
+    } catch (err) {console.log(err)}
   }
 
   const checkAndLogin = () => {
@@ -157,11 +165,13 @@ const AuthProvider: React.FC = (props) => {
           setToken(userFromLS.token)
           setName(userFromLS.name)
           setIsLoggedIn(true)
+          localStorage.removeItem("user")
+          console.log("test")
       }
   }
 
   return (
-    <AuthContext.Provider value={{ token, name, isLoggedIn, login, createUser, checkAndLogin }}>
+    <AuthContext.Provider value={{ token, name, isLoggedIn, login, logout, createUser, checkAndLogin }}>
       {props.children}
     </AuthContext.Provider>
   );

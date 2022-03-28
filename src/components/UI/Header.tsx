@@ -1,7 +1,20 @@
-import classes from "./Header.module.css"
+import { useNavigate } from "react-router-dom";
+import classes from "./Header.module.css";
 
 const Header: React.FC = (props) => {
-    return <p className={classes.header}>{props.children}</p>
+    const navigate = useNavigate()
+const addRoomhandler = () => {
+    navigate("/newroom")
 }
 
-export default Header
+  return (
+    <div className={classes.wrapper}>
+      <div className={classes.header}>{props.children}</div>
+      <div className={classes.controls}>
+        <div onClick={addRoomhandler} className={classes.controlButton}>+</div>
+      </div>
+    </div>
+  );
+};
+
+export default Header;

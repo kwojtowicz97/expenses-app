@@ -1,0 +1,71 @@
+.roomSummary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 40% 30% auto 30%;
+  grid-template-areas:
+    "header header header ownerMiniature"
+    "amount amount . ."
+    "divider divider divider divider"
+    "date date users users";
+  width: 100%;
+  height: 13rem;
+  background: #cfecff;
+  border-radius: 1.6rem;
+  margin-bottom: 3%;
+  padding: 3%;
+  padding-bottom: 0;
+}
+
+h1 {
+  grid-area: header;
+}
+
+.ownerMiniature {
+  background-color: black;
+  grid-area: ownerMiniature;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  align-self: center;
+  justify-self: center;
+}
+
+.amount {
+  font-size: 2rem;
+  color: #135BFF;
+}
+.divider {
+  grid-area: divider;
+  border-top: 1px solid #bddbef;
+  width: 100%;
+}
+
+.date {
+  grid-area: date;
+  justify-self: left;
+  align-self: center;
+}
+
+.date span {
+  font-size: 1.2rem;
+  align-self: center;
+  vertical-align: middle;
+  padding-right: 0.5rem;
+}
+
+.users {
+  grid-area: users;
+  display: flex;
+  flex-direction: row-reverse;
+  align-self: center;
+  justify-self: right;
+}
+
+.miniPicture {
+  border: 1px solid #cfecff;
+  background: black;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  margin-left: -1.2rem;
+}

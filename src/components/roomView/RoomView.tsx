@@ -1,7 +1,7 @@
 import Header from "../UI/Header"
 import { useContext } from "react"
 import { AppContext } from "../../store/app"
-import RoomList from "../UI/RoomList"
+import RoomList from "./ExpensesList"
 
 const RoomView: React.FC = (props) => {
     const appCtx = useContext(AppContext)

@@ -1,0 +1,91 @@
+.container {
+  padding: 0 5%;
+  width: 100%;
+  height: 100%;
+}
+
+.expense {
+  padding: 3%;
+  width: 100%;
+  height: 100%;
+  background: red;
+  background: #cfecff;
+  border-radius: 1.6rem;
+  overflow: hidden;
+  
+}
+
+.top {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    
+}
+
+.ownerMiniature {
+  background-color: black;
+  grid-area: ownerMiniature;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  align-self: center;
+  justify-self: center;
+}
+
+.top h1 {
+    justify-self: center;
+    align-self: center;
+    font-size: 1.4rem;
+    color: #6A6A6A;
+    padding-right: 2rem;
+}
+
+.amount{
+  font-size: 3rem;
+  color: #135BFF;
+    text-align: end;
+}
+
+p {
+    margin-right: 1rem;
+}
+
+.divider {
+  grid-area: divider;
+  border-top: 1px solid #bddbef;
+  width: 100%;
+  margin: 1rem 0
+}
+
+.list {
+    list-style: none;
+    padding: 3% 0;
+    position: relative;
+    height: 70%;
+    overflow: scroll;
+}
+
+
+
+.list::-webkit-scrollbar { width: 0 !important }
+
+.list li {
+    display: flex;
+    flex-direction: row;
+}
+
+.list li ~ li {
+    border-top: 1px solid #bddbef;
+}
+
+.elementText {
+        font-size: 1.4rem;
+    padding: 5%;
+}
+
+.smallAmount {
+      font-size: 2rem;
+  color: #135BFF;
+}

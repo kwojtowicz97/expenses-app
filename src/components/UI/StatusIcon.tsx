@@ -6,7 +6,7 @@ import { AuthContext } from "../../store/auth";
 const StatusIcon: React.FC = () => {
     const authCtx = useContext(AuthContext)
     const isLoggedIn = authCtx.isLoggedIn
-    return (<div className={`${classes.dot} ${isLoggedIn ? classes.logged : classes["not-logged"]}`}></div>)
+    return (<div onClick={authCtx.logout} className={`${classes.dot} ${isLoggedIn ? classes.logged : classes["not-logged"]}`}></div>)
 }
 
 export default StatusIcon

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Room, AppContextType } from "../@types/room";
+import { Room, Event, AppContextType } from "../@types/app";
 
 
 export const AppContext = React.createContext<AppContextType | null>(null);
@@ -9,33 +9,27 @@ const AppProvider: React.FC = (props) => {
   const [error, setError] = useState(null)
   const [rooms, setRooms] = useState<Room[] | null>([]);
   const [room, setRoom] = useState<Room | null>(null)
+  const [expense, setExpense] = useState<Event | null>(null)
 
     useEffect(() => console.log(room), [room])
 
 
-  // const fetchRooms = () => {
-  //   fetch(
-  //     "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json"
-  //   ).then(response => {
-  //     if (response.ok) {
-  //       return response.json()
-  //     }
-  //     return Promise.reject(response)
-  // }).then(items => {
-  //   setRooms(Object.values(items))
-  // })}
-
  const fetchRooms = async () => {
    try {
     const response = await fetch("https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json")
-    const items = await Object.values(response.json())
+     if (!response.ok) {
+       throw Error(response.statusText);
+     }
+    const items = await response.json()
     setRooms(items)
-   } catch {}
+   } catch (err){
+     console.log(err)
+   }
  }
 
   return (
     <AppContext.Provider
-      value={{error,  isError, rooms, room, setError, setIsError, fetchRooms, setRoom }}
+      value={{error,  isError, rooms, room, expense, setError, setIsError, fetchRooms, setRoom, setExpense }}
     >
       {props.children}
     </AppContext.Provider>

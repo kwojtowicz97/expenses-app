@@ -2,12 +2,13 @@ import classes from "./LightButton.module.css";
 import { useContext } from "react";
 import { AppContext } from "../../store/app";
 import { useNavigate } from "react-router-dom";
+import { Room } from "../../@types/app";
 
 
 const LigthButton: React.FC<{
   owner?: boolean;
   onClick?:  React.MouseEventHandler<HTMLButtonElement>;
-  room?: {name: string};
+  room?: Room;
 }> = (props) => {
 
   const appCtx = useContext(AppContext)

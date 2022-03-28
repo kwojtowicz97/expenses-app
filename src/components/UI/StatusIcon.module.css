@@ -2,8 +2,9 @@
     position: absolute;
     width: 1rem;
     height: 1rem;
-    right: 0.2rem;
+    right: 0.6rem;
     top: 0.2rem;
+    z-index: 99;
 
     border-radius: 100%;
 }

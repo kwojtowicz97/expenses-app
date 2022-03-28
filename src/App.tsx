@@ -14,6 +14,8 @@ import {
 import { AuthContext } from "./store/auth";
 import RoomSelectView from "./components/roomSelectView/roomSelectView";
 import RoomView from "./components/roomView/RoomView";
+import ExpenseDetail from "./components/expenseDetailView/expenseDetail";
+import NewRoomView from "./components/newRoomView/NewRoomView";
 
 function App() {
   const appCtx = useContext(AppContext);
@@ -26,6 +28,7 @@ function App() {
       {appCtx.isError && <Modal />}
       <Router>
         <Routes>
+          <Route path="/detail" element={<ExpenseDetail />} />
           <Route
             path="/"
             element={
@@ -37,12 +40,11 @@ function App() {
             }
           />
           <Route path="/login" element={<LoginView />} />
+          <Route path="/newroom" element={<NewRoomView />} />
           <Route path="/register" element={<NewAccountView />} />
           <Route
             path="/room"
-            element={
-              appCtx.room ? <RoomView /> : <Navigate to="/" />
-            }
+            element={appCtx.room ? <RoomView /> : <Navigate to="/" />}
           />
         </Routes>
       </Router>
