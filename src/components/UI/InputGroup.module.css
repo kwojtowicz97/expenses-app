@@ -15,6 +15,12 @@
   margin-bottom: 10%;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .input-group label {
   font-size: 1.4rem;
   font-weight: bold;

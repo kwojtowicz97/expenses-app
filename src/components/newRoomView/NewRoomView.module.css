@@ -1,0 +1,8 @@
+.wrapper {
+    font-size: 1.6rem;
+    margin: 15% 0;
+}
+
+.wrapper ~ .wrapper {
+    margin: 0 10%;
+}

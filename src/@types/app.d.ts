@@ -3,7 +3,7 @@ export interface Room {
     owner?: string;
     expenses?: Event[];
     creationDate?: string;
-    users?: []
+    users?: any[]
 }
 
 export interface Event {
@@ -26,4 +26,5 @@ export type AppContextType = {
   setIsError: (bool: boolean) => void;
   fetchRooms: () => void;
   setRoom: (room: Room) => void;
+  fetchNewRoom: (name: string, owner: string) => Promise
 };

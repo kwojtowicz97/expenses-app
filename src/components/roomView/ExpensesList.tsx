@@ -8,8 +8,8 @@ const ExpensesList: React.FC = () => {
   const room = appCtx.room
   return (
     <div className={classes.expensesList}>
-      {room.expenses &&
-        room.expenses.map((item) => <Expense item={item} amount={item.amount} date={item.date} name={item.name} owner={item.owner} users={Object.keys(item.users)}/>)}
+      {room.expenses ?
+        room.expenses.map((item) => <Expense item={item} amount={item.amount} date={item.date} name={item.name} owner={item.owner} users={Object.keys(item.users)}/>) : <p>There is no expenses yet</p>}
     </div>
   );
 };
