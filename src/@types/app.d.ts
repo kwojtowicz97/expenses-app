@@ -20,11 +20,21 @@ export type AppContextType = {
   error: string;
   rooms: Room[];
   room: Room;
-  expense: Event
+  expense: Event;
   setExpense: (expense: Event) => void;
   setError: (error: string) => void;
   setIsError: (bool: boolean) => void;
   fetchRooms: () => void;
   setRoom: (room: Room) => void;
-  fetchNewRoom: (name: string, owner: string) => Promise
+  fetchNewRoom: (name: string, owner: string) => Promise;
+  fetchNewExpense: (expense: Expense) => Promise;
+};
+
+
+export type Expense = {
+  amount: string;
+  date: string;
+  name: MutableRefObject<HTMLInputElement>;
+  owner: string;
+  users: {};
 };

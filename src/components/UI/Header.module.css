@@ -1,9 +1,11 @@
 .header {
     padding: 0.8rem;
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: bold;
     box-sizing: border-box;
     width: 70%;
+    margin:auto;
+    overflow: hidden;
 
 }
 

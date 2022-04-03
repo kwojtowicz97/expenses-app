@@ -6,11 +6,12 @@ import { AppContext } from "../../store/app";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
+import { Expense } from "../../@types/app";
 
 const NewExpenseView = () => {
   const authCtx = useContext(AuthContext);
   const appCtx = useContext(AppContext);
-  const roomNameRef = useRef<HTMLInputElement>(null)
+  const roomNameRef = useRef<HTMLInputElement>(null);
   const [isUserControlled, setIsUserControlled] = useState(false);
   const [totalAmount, setTotalAmount] = useState<string>("0");
   const [usersData, setUsersData] = useState(
@@ -18,7 +19,21 @@ const NewExpenseView = () => {
       return { name: user, value: "0", isActive: true };
     })
   );
-  console.log("is userControl:", isUserControlled)
+  const fetchNewExpenseHandelr = () => {
+    const users = {}
+    for (let i = 0; i<usersData.length; i++) {
+      users[usersData[i].name] = usersData[i].value
+    }
+    const expense: Expense = {
+      amount: totalAmount,
+      date: "22-12-2022",
+      name: roomNameRef.current.value,
+      owner: authCtx.name,
+      users: users,
+    };
+    appCtx.fetchNewExpense(expense);
+  };
+  console.log("is userControl:", isUserControlled);
   useEffect(() => {
     console.log(usersData);
     setTotalAmount(
@@ -85,7 +100,7 @@ const NewExpenseView = () => {
     setUsersData((prev) => {
       return prev.map((obj) => (obj.name === user.name ? updatedUser : obj));
     });
-     {
+    {
       setUsersData((usersData) => {
         const noOfUsers = usersData.filter((user) => user.isActive).length;
         const dividedToatalAmount = "" + +totalAmount / noOfUsers;
@@ -108,7 +123,7 @@ const NewExpenseView = () => {
 
   return (
     <>
-      <Header>New Expense</Header>
+      <Header onClick={fetchNewExpenseHandelr}>New Expense</Header>
       <div className={classes.container}>
         <div className={classes.expense}>
           <div className={classes.top}>
