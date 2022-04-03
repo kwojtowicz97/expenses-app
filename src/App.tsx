@@ -16,6 +16,7 @@ import RoomSelectView from "./components/roomSelectView/roomSelectView";
 import RoomView from "./components/roomView/RoomView";
 import ExpenseDetail from "./components/expenseDetailView/expenseDetail";
 import NewRoomView from "./components/newRoomView/NewRoomView";
+import NewExpenseView from "./components/NewExpenseView/NewExpenseView";
 
 function App() {
   const appCtx = useContext(AppContext);
@@ -40,6 +41,7 @@ function App() {
             }
           />
           <Route path="/login" element={<LoginView />} />
+          <Route path="/newexpense" element={<NewExpenseView />} />
           <Route path="/newroom" element={<NewRoomView />} />
           <Route path="/register" element={<NewAccountView />} />
           <Route

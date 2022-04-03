@@ -36,6 +36,7 @@ const AppProvider: React.FC = (props) => {
       }
       const data = await response.json();
       setRoom(room);
+      console.log(room.users)
       return data
     } catch (err) {
       console.log(err);

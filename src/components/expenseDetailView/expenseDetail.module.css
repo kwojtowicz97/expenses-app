@@ -12,6 +12,7 @@
   background: #cfecff;
   border-radius: 1.6rem;
   overflow: hidden;
+  position: relative;
   
 }
 
@@ -68,8 +69,8 @@ p {
 }
 
 
-
-.list::-webkit-scrollbar { width: 0 !important }
+/* 
+.list::-webkit-scrollbar { width: 0 !important } */
 
 .list li {
     display: flex;
