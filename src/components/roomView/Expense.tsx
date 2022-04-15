@@ -24,8 +24,8 @@ const Expense: React.FC<Event> = (props) => {
         <span>{props.date}</span>
       </div>
       <div className={classes.users}>
-        {props.users.map((user) => (
-          <div className={classes.miniPicture}></div>
+        {Object.keys(props.users).map((user) => (
+          props.users[user] !== "0" && <div className={classes.miniPicture}></div>
         ))}
       </div>
     </div>

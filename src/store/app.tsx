@@ -4,14 +4,12 @@ import { Expense } from "../@types/app";
 
 export const AppContext = React.createContext<AppContextType | null>(null);
 
-const AppProvider: React.FC = (props) => {
+const AppProvider: React.FC = (props) => { 
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState(null);
   const [rooms, setRooms] = useState<Room[] | null>([]);
   const [room, setRoom] = useState<Room | null>(null);
   const [expense, setExpense] = useState<Event | null>(null);
-
-  useEffect(() => console.log(room), [room]);
 
   const fetchNewRoom = async (roomName: string, owner: string) => {
     const room = {
@@ -35,10 +33,8 @@ const AppProvider: React.FC = (props) => {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      const data = await response.json();
-      setRoom(room);
-      console.log(room.users)
-      return data
+      await response.json();
+      setRoom(room)
     } catch (err) {
       console.log(err);
     }
@@ -60,11 +56,12 @@ const AppProvider: React.FC = (props) => {
   };
 
   const fetchNewExpense = async (expense: Expense) => {
-    console.log(expense)
-
+    console.log(rooms)
+    console.log(Object.keys(rooms));
     const indexOfRoom = Object.keys(rooms).find(
-      (key) => rooms[key] === room
+      (key) => rooms[key].name === room.name
     );
+    if (indexOfRoom === undefined) return
     console.log(indexOfRoom)
     try {
       const response = await fetch(
@@ -77,15 +74,21 @@ const AppProvider: React.FC = (props) => {
           body: JSON.stringify(expense),
         }
       );
+      await fetchRooms();
+      console.log(response)
+      
+      console.log(rooms)
+      
       if (!response.ok) {
         throw Error(response.statusText);
       }
       const data = await response.json();
-      console.log(data)
+      
       return data
     } catch (err) {
       console.log(err);
     }
+    
   };
 
   return (

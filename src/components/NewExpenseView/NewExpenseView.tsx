@@ -7,8 +7,10 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { Expense } from "../../@types/app";
+import { useNavigate } from "react-router-dom";
 
 const NewExpenseView = () => {
+  const navigate = useNavigate()
   const authCtx = useContext(AuthContext);
   const appCtx = useContext(AppContext);
   const roomNameRef = useRef<HTMLInputElement>(null);
@@ -19,10 +21,10 @@ const NewExpenseView = () => {
       return { name: user, value: "0", isActive: true };
     })
   );
-  const fetchNewExpenseHandelr = () => {
-    const users = {}
-    for (let i = 0; i<usersData.length; i++) {
-      users[usersData[i].name] = usersData[i].value
+  const fetchNewExpenseHandelr = async () => {
+    const users = {};
+    for (let i = 0; i < usersData.length; i++) {
+      users[usersData[i].name] = usersData[i].value;
     }
     const expense: Expense = {
       amount: totalAmount,
@@ -31,22 +33,20 @@ const NewExpenseView = () => {
       owner: authCtx.name,
       users: users,
     };
-    appCtx.fetchNewExpense(expense);
+    await appCtx.fetchNewExpense(expense);
+    appCtx.setRoom(Object.values(appCtx.rooms).find(prevRoom => prevRoom.name === appCtx.room.name));
+    appCtx.room && navigate("/room");
   };
-  console.log("is userControl:", isUserControlled);
   useEffect(() => {
-    console.log(usersData);
     setTotalAmount(
       "" +
         usersData
           .map((user) => (user.isActive ? +user.value : 0))
           .reduce((a, b) => a + b)
     );
-    console.log("userData changed");
   }, usersData);
 
   const setTotalAmountHandler = (event: React.FormEvent<HTMLInputElement>) => {
-    console.log("set total event");
     const val = event.currentTarget.value.replace(",", ".");
     const regex = new RegExp("^[0-9]*[.,]?[0-9]{0,2}$");
     event.preventDefault();
@@ -70,7 +70,6 @@ const NewExpenseView = () => {
     e,
     user: { name: string; value: string; isActive: boolean }
   ) => {
-    console.log("set user event");
     e.preventDefault();
     const val = e.currentTarget.value.replace(",", ".");
     const regex = new RegExp("^[0-9]*[.,]?[0-9]{0,2}$");
@@ -91,7 +90,6 @@ const NewExpenseView = () => {
     value: string;
     isActive: boolean;
   }) => {
-    console.log("set active event");
     const updatedUser = {
       name: user.name,
       value: user.value,
@@ -123,7 +121,7 @@ const NewExpenseView = () => {
 
   return (
     <>
-      <Header onClick={fetchNewExpenseHandelr}>New Expense</Header>
+      <Header first={{ symbol: "+", onClick: fetchNewExpenseHandelr }}>New Expense</Header>
       <div className={classes.container}>
         <div className={classes.expense}>
           <div className={classes.top}>

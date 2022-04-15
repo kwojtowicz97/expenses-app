@@ -144,6 +144,7 @@ const AuthProvider: React.FC = (props) => {
         throw new Error(data.error.message);
       }
       const data = await response.json();
+      console.log(data)
       setToken(data.idToken);
       setName(data.email);
       setIsLoggedIn(true);
@@ -166,7 +167,6 @@ const AuthProvider: React.FC = (props) => {
           setName(userFromLS.name)
           setIsLoggedIn(true)
           localStorage.removeItem("user")
-          console.log("test")
       }
   }
 

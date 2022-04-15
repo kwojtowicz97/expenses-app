@@ -15,10 +15,9 @@ const NewRoomView: React.FC = () => {
   const authCtx = useContext(AuthContext)
   const nameRef = useRef<HTMLInputElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
+
   const createHandler = async () => {
-      const name = await appCtx.fetchNewRoom(nameRef.current.value, authCtx.name)
-      
-      console.log(name)
+    const room = await appCtx.fetchNewRoom(nameRef.current.value, authCtx.name)
     navigate("/room")
   };
   return (

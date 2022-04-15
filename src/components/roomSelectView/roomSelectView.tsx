@@ -20,7 +20,9 @@ const RoomSelectView: React.FC = () => {
 
     return (
       <>
-        <Header onClick={addRoomhandler}>Select Room</Header>
+        <Header first={{ symbol: "+", onClick: addRoomhandler }}>
+          Select Room
+        </Header>
         <RoomButtonGroup rooms={appCtx.rooms} />
       </>
     );
