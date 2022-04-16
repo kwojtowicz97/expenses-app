@@ -8,6 +8,7 @@ import InputGroup from "../UI/InputGroup";
 import { Navigate } from "react-router-dom";
 
 const LoginView: React.FC = () => {
+  console.log("login")
   const userInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
   const authCtx = useContext(AuthContext);
@@ -24,7 +25,7 @@ const LoginView: React.FC = () => {
 
   return (
     <>
-        {authCtx.isLoggedIn && <Navigate to={"/"}/>}
+        {authCtx.authData && <Navigate to={"/"}/>}
       <Header>Login</Header>
       <form onSubmit={onLoginSubmit} className={classes.form}>
         <InputGroup id="user" label="E-Mail" type="text" pref={userInput} />

@@ -7,8 +7,7 @@ export const AppContext = React.createContext<AppContextType | null>(null);
 const AppProvider: React.FC = (props) => { 
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState(null);
-  const [rooms, setRooms] = useState<Room[] | null>([]);
-  const [room, setRoom] = useState<Room | null>(null);
+  const [rooms, setRooms] = useState<string[] | null>([]);
   const [expense, setExpense] = useState<Event | null>(null);
 
   const fetchNewRoom = async (roomName: string, owner: string) => {
@@ -34,7 +33,6 @@ const AppProvider: React.FC = (props) => {
         throw Error(response.statusText);
       }
       await response.json();
-      setRoom(room)
     } catch (err) {
       console.log(err);
     }
@@ -43,13 +41,13 @@ const AppProvider: React.FC = (props) => {
   const fetchRooms = async () => {
     try {
       const response = await fetch(
-        "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json"
+        "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json?shallow=true"
       );
       if (!response.ok) {
         throw Error(response.statusText);
       }
       const items = await response.json();
-      setRooms(items);
+      setRooms(Object.keys(items));
     } catch (err) {
       console.log(err);
     }
@@ -97,14 +95,12 @@ const AppProvider: React.FC = (props) => {
         error,
         isError,
         rooms,
-        room,
         expense,
         setError,
         fetchNewExpense,
         fetchNewRoom,
         setIsError,
         fetchRooms,
-        setRoom,
         setExpense,
       }}
     >

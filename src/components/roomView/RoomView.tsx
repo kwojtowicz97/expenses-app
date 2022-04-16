@@ -1,31 +1,51 @@
 import Header from "../UI/Header";
-import { useContext } from "react";
-import { AppContext } from "../../store/app";
-import RoomList from "./ExpensesList";
+import { useState } from "react";
+import { useEffect } from "react";
+import ExpensesList from "./ExpensesList";
+import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-
-const RoomView: React.FC = (props) => {
-  const appCtx = useContext(AppContext);
-    const updateRoom = async () => {
-      await appCtx.fetchRooms();
-      const room = Object.values(appCtx.rooms).find(
-        (newRoom) => newRoom.name === appCtx.room.name
-      );
-      appCtx.setRoom(room);
-    };
-
-    updateRoom();
+const RoomView: React.FC = () => {
+  const { id } = useParams();
+  console.log("roomView");
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [roomData, setRoomData] = useState(null);
   const navigate = useNavigate();
+  
+  useEffect(() => {
+      const fetchRoom = async (roomID) => {
+        try {
+          const response = await fetch(
+            `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}.json`
+          );
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          const fetchedRoomData = await response.json();
+          setRoomData(fetchedRoomData);
+          setIsLoaded(true);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+    fetchRoom(id);
+  }, []);
+
+
+
   const addExpenseHandler = () => {
-    navigate("/newexpense");
+    navigate(`/${id}/newexpense`);
   };
   return (
     <>
       <Header first={{ symbol: "+", onClick: addExpenseHandler }}>
-        {appCtx.room.name}
+        {isLoaded ? roomData.name : "Loading..."}
       </Header>
-      <RoomList />
+      {isLoaded ? (
+        <ExpensesList roomData={roomData} roomID={id} />
+      ) : (
+        <p>Loading...</p>
+      )}
     </>
   );
 };

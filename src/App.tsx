@@ -19,9 +19,9 @@ import NewRoomView from "./components/newRoomView/NewRoomView";
 import NewExpenseView from "./components/NewExpenseView/NewExpenseView";
 
 function App() {
+  console.log("app")
   const appCtx = useContext(AppContext);
   const authCtx = useContext(AuthContext);
-  useEffect(() => authCtx.checkAndLogin(), []);
 
   return (
     <div className={classes.container}>
@@ -29,11 +29,11 @@ function App() {
       {appCtx.isError && <Modal />}
       <Router>
         <Routes>
-          <Route path="/detail" element={<ExpenseDetail />} />
+          <Route path="/detail/:roomID/:id" element={<ExpenseDetail />} />
           <Route
             path="/"
             element={
-              !authCtx.isLoggedIn ? (
+              !authCtx.authData ? (
                 <Navigate to="/login" />
               ) : (
                 <RoomSelectView />
@@ -41,12 +41,12 @@ function App() {
             }
           />
           <Route path="/login" element={<LoginView />} />
-          <Route path="/newexpense" element={<NewExpenseView />} />
+          <Route path="/:roomID/newexpense" element={<NewExpenseView />} />
           <Route path="/newroom" element={<NewRoomView />} />
           <Route path="/register" element={<NewAccountView />} />
           <Route
-            path="/room"
-            element={appCtx.room ? <RoomView /> : <Navigate to="/" />}
+            path="/room/:id"
+            element={<RoomView />}
           />
         </Routes>
       </Router>

@@ -17,8 +17,36 @@ const NewRoomView: React.FC = () => {
   const codeRef = useRef<HTMLInputElement>(null);
 
   const createHandler = async () => {
-    const room = await appCtx.fetchNewRoom(nameRef.current.value, authCtx.name)
-    navigate("/room")
+      const fetchNewRoom = async (roomName: string, owner: string) => {
+        const room = {
+          name: roomName,
+          creationDate: "12-12-2022",
+          owner: owner,
+          expenses: [],
+          users: [],
+        };
+        try {
+          const response = await fetch(
+            "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(room),
+            }
+          );
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          const roomIDResponse = await response.json();
+          navigate(`/room/${roomIDResponse.name}`);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+   fetchNewRoom(nameRef.current.value, authCtx.authData.email)
+    
   };
   return (
     <>

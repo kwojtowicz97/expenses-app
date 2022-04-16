@@ -3,6 +3,7 @@ import classes from "./NewExpenseView.module.css";
 import { AuthContext } from "../../store/auth";
 import { useContext } from "react";
 import { AppContext } from "../../store/app";
+import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useRef } from "react";
@@ -10,41 +11,90 @@ import { Expense } from "../../@types/app";
 import { useNavigate } from "react-router-dom";
 
 const NewExpenseView = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const { roomID } = useParams();
   const authCtx = useContext(AuthContext);
-  const appCtx = useContext(AppContext);
   const roomNameRef = useRef<HTMLInputElement>(null);
   const [isUserControlled, setIsUserControlled] = useState(false);
   const [totalAmount, setTotalAmount] = useState<string>("0");
-  const [usersData, setUsersData] = useState(
-    appCtx.room.users.map((user) => {
-      return { name: user, value: "0", isActive: true };
-    })
-  );
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [roomUsersData, setRoomUsersData] = useState(null);
+
+  useEffect(() => {
+    const fetchRoomUsers = async (roomID) => {
+      try {
+        const response = await fetch(
+          `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}/users.json`
+        );
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        const fetchedRoomUsers = await response.json();
+        console.log(fetchedRoomUsers);
+        const usersData = []
+        for (const user of fetchedRoomUsers) {
+          usersData.push({userID: user, value: "0", isActive: true})
+        }
+        setRoomUsersData(usersData);
+        setIsLoaded(true);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchRoomUsers(roomID);
+  }, []);
+
+  useEffect(() => {
+    if (!isLoaded) return 
+    setTotalAmount(
+      "" +
+        roomUsersData
+          .map((user) => (user.isActive ? +user.value : 0))
+          .reduce((a, b) => a + b)
+    );
+  }, roomUsersData);
+
   const fetchNewExpenseHandelr = async () => {
+
+      const fetchNewExpense = async (expense: Expense) => {
+        try {
+          const response = await fetch(
+            `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}/expenses.json`,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(expense),
+            }
+          );
+          if (!response.ok) {
+            throw Error(response.statusText);
+          }
+          const data = await response.json();
+
+          return data;
+        } catch (err) {
+          console.log(err);
+        }
+      };
+
+
+    
     const users = {};
-    for (let i = 0; i < usersData.length; i++) {
-      users[usersData[i].name] = usersData[i].value;
+    for (const user of roomUsersData) {
+      users[user.userID] = user.value;
     }
     const expense: Expense = {
       amount: totalAmount,
       date: "22-12-2022",
       name: roomNameRef.current.value,
-      owner: authCtx.name,
+      owner: authCtx.authData.localId,
       users: users,
     };
-    await appCtx.fetchNewExpense(expense);
-    appCtx.setRoom(Object.values(appCtx.rooms).find(prevRoom => prevRoom.name === appCtx.room.name));
-    appCtx.room && navigate("/room");
+    await fetchNewExpense(expense);
+    navigate(`/room/${roomID}`);
   };
-  useEffect(() => {
-    setTotalAmount(
-      "" +
-        usersData
-          .map((user) => (user.isActive ? +user.value : 0))
-          .reduce((a, b) => a + b)
-    );
-  }, usersData);
 
   const setTotalAmountHandler = (event: React.FormEvent<HTMLInputElement>) => {
     const val = event.currentTarget.value.replace(",", ".");
@@ -53,12 +103,12 @@ const NewExpenseView = () => {
     if (!regex.test(event.currentTarget.value)) return;
     setIsUserControlled(false);
     setTotalAmount(event.currentTarget.value);
-    setUsersData((prev) => {
+    setRoomUsersData((prev) => {
       const noOfUsers = prev.filter((user) => user.isActive).length;
       const dividedToatalAmount = "" + +val / noOfUsers;
       return prev.map((user) => {
         return {
-          name: user.name,
+          userID: user.userID,
           value: user.isActive ? dividedToatalAmount : "0",
           isActive: user.isActive,
         };
@@ -68,49 +118,49 @@ const NewExpenseView = () => {
 
   const setUserValueHandler = (
     e,
-    user: { name: string; value: string; isActive: boolean }
+    user: { userID: string; value: string; isActive: boolean }
   ) => {
     e.preventDefault();
     const val = e.currentTarget.value.replace(",", ".");
     const regex = new RegExp("^[0-9]*[.,]?[0-9]{0,2}$");
     if (!regex.test(e.currentTarget.value)) return;
     const updatedUser = {
-      name: user.name,
+      userID: user.userID,
       value: val,
       isActive: user.isActive,
     };
     setIsUserControlled(true);
-    setUsersData((prev) =>
-      prev.map((obj) => (obj.name === user.name ? updatedUser : obj))
+    setRoomUsersData((prev) =>
+      prev.map((obj) => (obj.userID === user.userID ? updatedUser : obj))
     );
   };
 
   const activeHandler = (user: {
-    name: string;
+    userID: string;
     value: string;
     isActive: boolean;
   }) => {
     const updatedUser = {
-      name: user.name,
+      userID: user.userID,
       value: user.value,
       isActive: !user.isActive,
     };
-    setUsersData((prev) => {
-      return prev.map((obj) => (obj.name === user.name ? updatedUser : obj));
+    setRoomUsersData((prev) => {
+      return prev.map((obj) => (obj.userID === user.userID ? updatedUser : obj));
     });
     {
-      setUsersData((usersData) => {
+      setRoomUsersData((usersData) => {
         const noOfUsers = usersData.filter((user) => user.isActive).length;
         const dividedToatalAmount = "" + +totalAmount / noOfUsers;
         return usersData.map((user) => {
           return !isUserControlled
             ? {
-                name: user.name,
+                userID: user.userID,
                 value: user.isActive ? dividedToatalAmount : "0",
                 isActive: user.isActive,
               }
             : {
-                name: user.name,
+                userID: user.userID,
                 value: user.isActive ? user.value : "0",
                 isActive: user.isActive,
               };
@@ -121,16 +171,18 @@ const NewExpenseView = () => {
 
   return (
     <>
-      <Header first={{ symbol: "+", onClick: fetchNewExpenseHandelr }}>New Expense</Header>
+      <Header first={{ symbol: "+", onClick: fetchNewExpenseHandelr }}>
+        New Expense
+      </Header>
       <div className={classes.container}>
-        <div className={classes.expense}>
+        {isLoaded && <div className={classes.expense}>
           <div className={classes.top}>
             <div className={classes.ownerMiniature}></div>
-            <h1>{authCtx.name}</h1>
+            <h1>{authCtx.authData.email}</h1>
           </div>
           <div className={classes.amountDiv}>
             <input
-              value={usersData
+              value={roomUsersData
                 .map((user) => +user.value)
                 .reduce((a, b) => a + b)}
               onChange={setTotalAmountHandler}
@@ -145,11 +197,11 @@ const NewExpenseView = () => {
             <input ref={roomNameRef} type="text" placeholder="Name" />
           </h1>
           <ul className={classes.list}>
-            {usersData.map((user) => (
+            {roomUsersData.map((user) => (
               <li>
                 <div className={classes.ownerMiniature}></div>
                 <div className={classes.elementText}>
-                  <p className={classes.name}>{user.name}</p>
+                  <p className={classes.name}>{user.userID}</p>
                   <div className={classes.smallAmountDiv}>
                     <input
                       readOnly={!user.isActive}
@@ -170,7 +222,7 @@ const NewExpenseView = () => {
               </li>
             ))}
           </ul>
-        </div>
+        </div>}
       </div>
     </>
   );
