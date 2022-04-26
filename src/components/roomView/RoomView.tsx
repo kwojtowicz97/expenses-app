@@ -13,40 +13,31 @@ const RoomView: React.FC = () => {
   const [isLoaded, setIsLoaded] = useState(false);
 
   const navigate = useNavigate();
-  const [postTransactionsResponse, isPosted, isPostedError, doPost] =
+  const [_postTransactionsResponse, isPosted, _isPostedError, doPost] =
     usePostData(
       `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${id}/transactions.json`,
       "PUT"
     );
 
-  const [roomData, isRoomDataLoaded, isRoomDataError, doFetch] = useFetchData(
+  const [roomData, isRoomDataLoaded, _isRoomDataError, doFetch] = useFetchData(
     `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${id}.json`
   );
 
-  const [
-    fetchedUserNames,
-    isUsernamesLoaded,
-    isUserNamesError,
-    doFetchUserNames,
-  ] = useFetchData(
+  const [fetchedUserNames, isUsernamesLoaded, , ,] = useFetchData(
     `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/users.json`
   );
 
   useEffect(
-    () =>
-      setIsLoaded(
-        isRoomDataLoaded && isUsernamesLoaded
-      ),
+    () => setIsLoaded(isRoomDataLoaded && isUsernamesLoaded),
     [isRoomDataLoaded, isUsernamesLoaded]
   );
 
   useEffect(() => {
     doFetch((prev) => !prev);
-    console.log("isPosted", isPosted)
-  }, [isPosted])
+    console.log("isPosted", isPosted);
+  }, [isPosted]);
 
   const summarizeRoomHandler = () => {
-    alert("clicked");
     const usersBalance: any = {};
 
     for (const [key, value] of Object.entries<any>(roomData.expenses)) {
@@ -61,33 +52,35 @@ const RoomView: React.FC = () => {
           : (usersBalance[ekey] = -evalue);
       }
     }
-    console.log(usersBalance);
     const transactions = [];
 
     let sortedBalance = Object.entries(usersBalance)
-      .sort((key, value) => Math.abs(+value))
+      .sort((_key, value) => Math.abs(+value))
       .reverse()
       .filter((user) => +user[1] !== 0);
     console.log(sortedBalance);
     while (sortedBalance.length !== 0) {
+      const balanceLen = sortedBalance.length - 1
+
       const transaction = {
         from:
-          +sortedBalance.at(0)[1] > 0
-            ? sortedBalance.at(-1)[0]
-            : sortedBalance.at(0)[0],
+          +sortedBalance[0][1] > 0
+            ? sortedBalance[balanceLen][0]
+            : sortedBalance[0][0],
         to:
-          +sortedBalance.at(0)[1] > 0
-            ? sortedBalance.at(0)[0]
-            : sortedBalance.at(-1)[0],
-        amount: Math.abs(+sortedBalance.at(0)[1]),
+          +sortedBalance[0][1] > 0
+            ? sortedBalance[0][0]
+            : sortedBalance[balanceLen][0],
+        amount: Math.abs(+sortedBalance[0][1]),
         isPaid: false,
       };
+      console.log(transaction)
       transactions.push(transaction);
-      sortedBalance.at(-1)[1] =
-        +sortedBalance.at(-1)[1] + +sortedBalance.at(0)[1];
-      sortedBalance.at(0)[1] = 0;
+      sortedBalance[balanceLen][1] =
+        +sortedBalance[balanceLen][1] + +sortedBalance[0][1];
+      sortedBalance[0][1] = 0;
       sortedBalance = sortedBalance
-        .sort((key, value) => Math.abs(+value))
+        .sort((_key, value) => Math.abs(+value))
         .reverse()
         .filter((user) => +user[1] !== 0);
     }
@@ -110,11 +103,7 @@ const RoomView: React.FC = () => {
       >
         {roomData.name}
       </Header>
-      <ExpensesList
-       users={fetchedUserNames}
-        roomData={roomData}
-        roomID={id}
-      />
+      <ExpensesList users={fetchedUserNames} roomData={roomData} roomID={id} />
     </>
   ) : (
     <p>Loading...</p>

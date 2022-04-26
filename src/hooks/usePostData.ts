@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 function usePostData(initialUrl: string, method: string) {
   const [response, setResponse] = useState(null);

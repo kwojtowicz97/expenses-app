@@ -1,7 +1,5 @@
 import classes from "./expenseDetail.module.css";
 import { useState } from "react";
-import { useContext } from "react";
-import { AppContext } from "../../store/app";
 import Header from "../UI/Header";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";

@@ -189,7 +189,7 @@ const NewExpenseView = () => {
               </h1>
               <ul className={classes.list}>
                 {roomUsersData.map((user) => (
-                  <li>
+                  <li key={user}>
                     <div className={classes.ownerMiniature}></div>
                     <div className={classes.elementText}>
                       <p className={classes.name}>

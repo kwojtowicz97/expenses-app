@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Room, AppContextType } from "../@types/app";
-import { Expense } from "../@types/app";
+import { AppContextType } from "../@types/app";
+
 
 export const AppContext = React.createContext<AppContextType | null>(null);
 
