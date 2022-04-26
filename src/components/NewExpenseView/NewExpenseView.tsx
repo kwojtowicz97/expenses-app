@@ -9,6 +9,9 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { Expense } from "../../@types/app";
 import { useNavigate } from "react-router-dom";
+import useFetchData from "../../hooks/useFetchData";
+import usePostData from "../../hooks/usePostData";
+import Avatar from "../UI/Avatar";
 
 const NewExpenseView = () => {
   const navigate = useNavigate();
@@ -17,70 +20,48 @@ const NewExpenseView = () => {
   const roomNameRef = useRef<HTMLInputElement>(null);
   const [isUserControlled, setIsUserControlled] = useState(false);
   const [totalAmount, setTotalAmount] = useState<string>("0");
-  const [isLoaded, setIsLoaded] = useState(false);
   const [roomUsersData, setRoomUsersData] = useState(null);
+  const [fetchedUsers, isUsersLoaded, isUsersError, doFetchUsers] =
+    useFetchData(
+      `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}/users.json`
+    );
+  const [
+    fetchedUserNames,
+    isUsernamesLoaded,
+    isUserNamesError,
+    doFetchUserNames,
+  ] = useFetchData(
+    `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/users.json`
+  );
+  const [expenseID, isExpensePosted, isExpenseError, doPost] = usePostData(
+    `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}/expenses.json`,
+    "POST"
+  );
 
   useEffect(() => {
-    const fetchRoomUsers = async (roomID) => {
-      try {
-        const response = await fetch(
-          `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}/users.json`
-        );
-        if (!response.ok) {
-          throw Error(response.statusText);
-        }
-        const fetchedRoomUsers = await response.json();
-        console.log(fetchedRoomUsers);
-        const usersData = []
-        for (const user of fetchedRoomUsers) {
-          usersData.push({userID: user, value: "0", isActive: true})
-        }
-        setRoomUsersData(usersData);
-        setIsLoaded(true);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    fetchRoomUsers(roomID);
-  }, []);
+    if (!isUsersLoaded || isUsersError) return;
+    const usersData = [];
+    for (const user of fetchedUsers) {
+      usersData.push({ userID: user, value: "0", isActive: true });
+    }
+    setRoomUsersData(usersData);
+  }, [isUsersLoaded]);
 
   useEffect(() => {
-    if (!isLoaded) return 
+    if (!isUsersLoaded) return;
     setTotalAmount(
       "" +
         roomUsersData
           .map((user) => (user.isActive ? +user.value : 0))
           .reduce((a, b) => a + b)
     );
-  }, roomUsersData);
+  }, [roomUsersData]);
 
-  const fetchNewExpenseHandelr = async () => {
+  useEffect(() => {
+    isExpensePosted && navigate(`/room/${roomID}`);
+  }, [isExpensePosted]);
 
-      const fetchNewExpense = async (expense: Expense) => {
-        try {
-          const response = await fetch(
-            `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}/expenses.json`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(expense),
-            }
-          );
-          if (!response.ok) {
-            throw Error(response.statusText);
-          }
-          const data = await response.json();
-
-          return data;
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-
-    
+  const fetchNewExpenseHandelr = () => {
     const users = {};
     for (const user of roomUsersData) {
       users[user.userID] = user.value;
@@ -92,8 +73,7 @@ const NewExpenseView = () => {
       owner: authCtx.authData.localId,
       users: users,
     };
-    await fetchNewExpense(expense);
-    navigate(`/room/${roomID}`);
+    doPost(expense);
   };
 
   const setTotalAmountHandler = (event: React.FormEvent<HTMLInputElement>) => {
@@ -146,7 +126,9 @@ const NewExpenseView = () => {
       isActive: !user.isActive,
     };
     setRoomUsersData((prev) => {
-      return prev.map((obj) => (obj.userID === user.userID ? updatedUser : obj));
+      return prev.map((obj) =>
+        obj.userID === user.userID ? updatedUser : obj
+      );
     });
     {
       setRoomUsersData((usersData) => {
@@ -174,56 +156,73 @@ const NewExpenseView = () => {
       <Header first={{ symbol: "+", onClick: fetchNewExpenseHandelr }}>
         New Expense
       </Header>
-      <div className={classes.container}>
-        {isLoaded && <div className={classes.expense}>
-          <div className={classes.top}>
-            <div className={classes.ownerMiniature}></div>
-            <h1>{authCtx.authData.email}</h1>
-          </div>
-          <div className={classes.amountDiv}>
-            <input
-              value={roomUsersData
-                .map((user) => +user.value)
-                .reduce((a, b) => a + b)}
-              onChange={setTotalAmountHandler}
-              className={classes.amount}
-              type="text"
-              placeholder="0,00"
-            />
-            <div>zł</div>
-          </div>
-          <div className={classes.divider}></div>
-          <h1>
-            <input ref={roomNameRef} type="text" placeholder="Name" />
-          </h1>
-          <ul className={classes.list}>
-            {roomUsersData.map((user) => (
-              <li>
-                <div className={classes.ownerMiniature}></div>
-                <div className={classes.elementText}>
-                  <p className={classes.name}>{user.userID}</p>
-                  <div className={classes.smallAmountDiv}>
-                    <input
-                      readOnly={!user.isActive}
-                      onChange={(e) => setUserValueHandler(e, user)}
-                      className={classes.smallAmount}
-                      value={user.value}
-                      type="text"
-                    />
-                    <div>zł</div>
-                  </div>
+      {roomUsersData && isUsernamesLoaded ? (
+        <div className={classes.container}>
+          {isUsersLoaded && (
+            <div className={classes.expense}>
+              <div className={classes.top}>
+                <div className={classes.ownerMiniature}>
+                  <Avatar
+                    user={fetchedUserNames[authCtx.authData.localId]}
+                    size={80}
+                  />
                 </div>
-                <div
-                  onClick={() => activeHandler(user)}
-                  className={`${classes.checkMark} ${
-                    user.isActive && classes.active
-                  }`}
-                ></div>
-              </li>
-            ))}
-          </ul>
-        </div>}
-      </div>
+                <h1>{`${fetchedUserNames[authCtx.authData.localId].firstName} ${
+                  fetchedUserNames[authCtx.authData.localId].lastName
+                }`}</h1>
+              </div>
+              <div className={classes.amountDiv}>
+                <input
+                  value={roomUsersData
+                    .map((user) => +user.value)
+                    .reduce((a, b) => a + b)}
+                  onChange={setTotalAmountHandler}
+                  className={classes.amount}
+                  type="text"
+                  placeholder="0,00"
+                />
+                <div>zł</div>
+              </div>
+              <div className={classes.divider}></div>
+              <h1>
+                <input ref={roomNameRef} type="text" placeholder="Name" />
+              </h1>
+              <ul className={classes.list}>
+                {roomUsersData.map((user) => (
+                  <li>
+                    <div className={classes.ownerMiniature}></div>
+                    <div className={classes.elementText}>
+                      <p className={classes.name}>
+                        {`${fetchedUserNames[user.userID].firstName} ${
+                          fetchedUserNames[user.userID].lastName
+                        }`}
+                      </p>
+                      <div className={classes.smallAmountDiv}>
+                        <input
+                          readOnly={!user.isActive}
+                          onChange={(e) => setUserValueHandler(e, user)}
+                          className={classes.smallAmount}
+                          value={user.value}
+                          type="text"
+                        />
+                        <div>zł</div>
+                      </div>
+                    </div>
+                    <div
+                      onClick={() => activeHandler(user)}
+                      className={`${classes.checkMark} ${
+                        user.isActive && classes.active
+                      }`}
+                    ></div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
     </>
   );
 };

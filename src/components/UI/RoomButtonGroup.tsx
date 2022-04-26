@@ -9,7 +9,7 @@ const RoomButtonGroup: React.FC<{rooms: string[]}> = (props) => {
   return (
     <div className={classes.RoomButtonGroup}>
       {props.rooms.map((roomID) => (
-        <LigthButton roomID={roomID} />
+        <LigthButton roomID={roomID} key={roomID}/>
       ))}
     </div>
   );

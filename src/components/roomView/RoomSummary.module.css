@@ -1,0 +1,57 @@
+.summaryCard {
+  width: 100%;
+  background: #003fe1;
+  display: flex;
+  border-radius: 1.6rem;
+  flex-direction: column;
+  margin-bottom: 3%;
+  padding: 3%;
+  padding-bottom: 0;
+}
+
+.cardTitle {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.transaction {
+  margin: 10px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #bddbef;
+}
+
+
+.transactions div:last-child {
+  border-bottom: none;
+}
+
+.transactionUsers {
+  display: flex;
+  flex-direction: column;
+}
+
+.transactionUser {
+  font-size: 1.6rem;
+}
+
+.transactionUsersContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.transactionArrowIcon {
+  margin: 1rem;
+  font-weight: bold;
+  font-size: 2.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.transactionAmount {
+  font-size: 1.6rem;
+  color: white;
+}

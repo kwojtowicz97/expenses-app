@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Room, Event, AppContextType } from "../@types/app";
+import { Room, AppContextType } from "../@types/app";
 import { Expense } from "../@types/app";
 
 export const AppContext = React.createContext<AppContextType | null>(null);
@@ -8,7 +8,8 @@ const AppProvider: React.FC = (props) => {
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState(null);
   const [rooms, setRooms] = useState<string[] | null>([]);
-  const [expense, setExpense] = useState<Event | null>(null);
+  const [expense, setExpense] = useState<any | null>(null);
+  
 
   const fetchNewRoom = async (roomName: string, owner: string) => {
     const room = {
@@ -53,41 +54,43 @@ const AppProvider: React.FC = (props) => {
     }
   };
 
-  const fetchNewExpense = async (expense: Expense) => {
-    console.log(rooms)
-    console.log(Object.keys(rooms));
-    const indexOfRoom = Object.keys(rooms).find(
-      (key) => rooms[key].name === room.name
-    );
-    if (indexOfRoom === undefined) return
-    console.log(indexOfRoom)
-    try {
-      const response = await fetch(
-        `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${indexOfRoom}/expenses.json`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(expense),
-        }
-      );
-      await fetchRooms();
-      console.log(response)
+
+
+  // const fetchNewExpense = async (expense: Expense) => {
+  //   console.log(rooms)
+  //   console.log(Object.keys(rooms));
+  //   const indexOfRoom = Object.keys(rooms).find(
+  //     (key) => rooms[key].name === room.name
+  //   );
+  //   if (indexOfRoom === undefined) return
+  //   console.log(indexOfRoom)
+  //   try {
+  //     const response = await fetch(
+  //       `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${indexOfRoom}/expenses.json`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify(expense),
+  //       }
+  //     );
+  //     await fetchRooms();
+  //     console.log(response)
       
-      console.log(rooms)
+  //     console.log(rooms)
       
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      const data = await response.json();
+  //     if (!response.ok) {
+  //       throw Error(response.statusText);
+  //     }
+  //     const data = await response.json();
       
-      return data
-    } catch (err) {
-      console.log(err);
-    }
+  //     return data
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
     
-  };
+  // };
 
   return (
     <AppContext.Provider
@@ -95,13 +98,9 @@ const AppProvider: React.FC = (props) => {
         error,
         isError,
         rooms,
-        expense,
         setError,
-        fetchNewExpense,
-        fetchNewRoom,
         setIsError,
         fetchRooms,
-        setExpense,
       }}
     >
       {props.children}

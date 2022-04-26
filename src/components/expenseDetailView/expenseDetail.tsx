@@ -5,57 +5,58 @@ import { AppContext } from "../../store/app";
 import Header from "../UI/Header";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
+import Avatar from "../UI/Avatar";
+import useFetchData from "../../hooks/useFetchData";
 
 const ExpenseDetail: React.FC = (props) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [expenseData, setExpenseData] = useState(null);
   const { id, roomID } = useParams();
+  const [isLoaded, setIsLoaded] = useState(false)
 
-  useEffect(() => {
-    fetchExpense(roomID, id)
-  }, [])
+  const [roomData, isRoomDataLoaded, isRoomDataError, doFetch] = useFetchData(
+    `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}.json`
+  );
 
-  const appCtx = useContext(AppContext);
+  const [usersData, isUsernamesLoaded, isUserNamesError, doFetchUserNames] =
+    useFetchData(
+      `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/users.json`
+    );
 
-  const fetchExpense = async (roomID, expenseID) => {
-    try {
-      const response = await fetch(
-        `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}/expenses/${expenseID}.json`
-      );
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      const fetchedExpenseData = await response.json();
-      console.log(fetchedExpenseData)
-      setExpenseData(fetchedExpenseData);
-      setIsLoaded(true);
-    } catch (err) {
-      console.log(err);
-    }
-  };
-  return (
-    
-    isLoaded ? <>
-      <Header>{expenseData.name}</Header>
+  useEffect(
+    () => setIsLoaded(isRoomDataLoaded && isUsernamesLoaded),
+    [isRoomDataLoaded, isUsernamesLoaded]
+  );
+
+
+  return isLoaded ? (
+    <>
+      <Header>{roomData.name}</Header>
       <div className={classes.container}>
         <div className={classes.expense}>
           <div className={classes.top}>
-            <div className={classes.ownerMiniature}></div>
-            <h1>{expenseData.owner}</h1>
+            <div className={classes.ownerMiniature}>
+              <Avatar user={usersData[roomData.expenses[id].owner]} size={80} />
+            </div>
+            <h1>{`${usersData[roomData.expenses[id].owner].firstName} ${
+              usersData[roomData.expenses[id].owner].lastName
+            }`}</h1>
           </div>
           <div className={classes.amount}>
-            <p>{expenseData.amount}zł</p>
+            <p>{roomData.expenses[id].amount}zł</p>
           </div>
           <div className={classes.divider}></div>
-          <h1>{expenseData.name}</h1>
+          <h1>{roomData.expenses[id].name}</h1>
           <ul className={classes.list}>
-            {Object.keys(expenseData.users).map((user) => (
-              <li>
-                <div className={classes.ownerMiniature}></div>
+            {Object.keys(roomData.expenses[id].users).map((user) => (
+              <li key={user}>
+                <div className={classes.ownerMiniature}>
+                  <Avatar user={usersData[user]} size={80} />
+                </div>
                 <div className={classes.elementText}>
-                  <p className={classes.name}>{user}</p>
+                  <p
+                    className={classes.name}
+                  >{`${usersData[user].firstName} ${usersData[user].lastName}`}</p>
                   <p className={classes.smallAmount}>
-                    {expenseData.users[user]}zł
+                    {roomData.expenses[id].users[user]}zł
                   </p>
                 </div>
               </li>
@@ -63,7 +64,9 @@ const ExpenseDetail: React.FC = (props) => {
           </ul>
         </div>
       </div>
-    </> : <p>Loading...</p>
+    </>
+  ) : (
+    <p>Loading...</p>
   );
 };
 

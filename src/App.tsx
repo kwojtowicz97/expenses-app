@@ -33,21 +33,14 @@ function App() {
           <Route
             path="/"
             element={
-              !authCtx.authData ? (
-                <Navigate to="/login" />
-              ) : (
-                <RoomSelectView />
-              )
+              !authCtx.authData ? <Navigate to="/login" /> : <RoomSelectView />
             }
           />
           <Route path="/login" element={<LoginView />} />
           <Route path="/:roomID/newexpense" element={<NewExpenseView />} />
           <Route path="/newroom" element={<NewRoomView />} />
           <Route path="/register" element={<NewAccountView />} />
-          <Route
-            path="/room/:id"
-            element={<RoomView />}
-          />
+          <Route path="/room/:id" element={<RoomView />} />
         </Routes>
       </Router>
     </div>
