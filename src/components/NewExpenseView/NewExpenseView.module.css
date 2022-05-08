@@ -12,43 +12,58 @@
   background: #cfecff;
   border-radius: 1.6rem;
   overflow: hidden;
+  position: relative;
 }
 
 .top {
   width: 100%;
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
   align-items: center;
+  position: relative;
 }
 
-.ownerMiniature {
-  background-color: black;
+.top h1 {
+  font-size: 2rem;
+  margin-left: 1rem;
+}
+
+.userMiniature {
   grid-area: ownerMiniature;
   width: 4rem;
   height: 4rem;
   border-radius: 50%;
   align-self: center;
   justify-self: center;
+  position: relative;
+  overflow: hidden;
   flex-shrink: 0;
 }
 
-.top h1 {
-  justify-self: center;
+.ownerMiniature {
+  grid-area: ownerMiniature;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
   align-self: center;
-  font-size: 1.4rem;
-  color: #6a6a6a;
-  padding-right: 2rem;
+  justify-self: center;
+  position: relative;
   overflow: hidden;
+  flex-shrink: 0;
+}
+
+
+
+.amountContainer {
+  position: relative;
 }
 
 .amount {
+  width: 100%;
   border: none;
   outline: none;
   background-color: transparent;
   font-size: 3rem;
   color: #135bff;
-  width:  auto;
   text-align: end;
 }
 
@@ -89,12 +104,13 @@ p {
   font-size: 1.4rem;
   padding: 5%;
   width: auto;
+  flex-grow: 3;
 }
 
 .smallAmount {
   font-size: 2rem;
   color: #135bff;
-    border: none;
+  border: none;
   outline: none;
   background-color: transparent;
   width: 50%;
@@ -108,7 +124,7 @@ p {
 }
 
 .amountDiv div {
-    background-color: transparent;
+  background-color: transparent;
   font-size: 3rem;
   color: #135bff;
 }
@@ -118,18 +134,22 @@ p {
   width: 100%;
 }
 
+
+
 .smallAmountDiv div {
-    background-color: transparent;
+  background-color: transparent;
   font-size: 2rem;
   color: #135bff;
 }
 
 .checkMark {
-  flex-shrink: 0;
+  
   background: red;
-  width: 2rem;
-  height: 2rem;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
   align-self: center;
+  justify-self: end;
 }
 
 .active {
@@ -137,7 +157,7 @@ p {
 }
 
 h1 input {
-      border: none;
+  border: none;
   outline: none;
   background-color: transparent;
   font-size: 2rem;

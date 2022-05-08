@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 
-function usePostData(initialUrl: string, method: string) {
+function usePostData() {
   const [response, setResponse] = useState(null);
+  const [URL, setURL] = useState(null)
   const [data, setData] = useState(null);
   const [isLoaded, setisLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -12,8 +13,8 @@ function usePostData(initialUrl: string, method: string) {
       setisLoaded(false);
       setIsError(false);
       try {
-        const fetchedResponse = await fetch(initialUrl, {
-          method: method,
+        const fetchedResponse = await fetch(URL, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
@@ -30,7 +31,7 @@ function usePostData(initialUrl: string, method: string) {
     fetchData();
   }, [data]);
 
-  return [response, isLoaded, isError, setData];
+  return [response, isLoaded, isError, setData, setURL];
 }
 
 export default usePostData;

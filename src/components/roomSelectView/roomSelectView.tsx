@@ -10,13 +10,14 @@ const RoomSelectView: React.FC = () => {
   const navigate = useNavigate();
   const [response, isLoaded, isError, doFetch] = useFetchData(fetchRoomsURL);
 
+
   return (
     <>
-      <Header first={{ symbol: "+", onClick: () => navigate("/newroom") }}>
+      <Header code={false} first={{ symbol: "+", onClick: () => navigate("/newroom") }}>
         Select Room
       </Header>
-      {isLoaded ? (
-        <RoomButtonGroup rooms={Object.keys(response)} />
+      {isLoaded ? ( response ?
+        <RoomButtonGroup rooms={Object.keys(response)} /> : <p>There are no rooms yet</p>
       ) : (
         <p>Loading...</p>
       )}

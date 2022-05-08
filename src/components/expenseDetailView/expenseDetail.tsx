@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import Avatar from "../UI/Avatar";
 import useFetchData from "../../hooks/useFetchData";
+import { AuthContext } from "../../store/auth";
+import { useContext } from "react";
 
 const ExpenseDetail: React.FC = (props) => {
   const { id, roomID } = useParams();
@@ -27,7 +29,7 @@ const ExpenseDetail: React.FC = (props) => {
 
   return isLoaded ? (
     <>
-      <Header>{roomData.name}</Header>
+      <Header code={roomData.code}>{roomData.name}</Header>
       <div className={classes.container}>
         <div className={classes.expense}>
           <div className={classes.top}>
@@ -46,7 +48,7 @@ const ExpenseDetail: React.FC = (props) => {
           <ul className={classes.list}>
             {Object.keys(roomData.expenses[id].users).map((user) => (
               <li key={user}>
-                <div className={classes.ownerMiniature}>
+                <div className={classes.userMiniature}>
                   <Avatar user={usersData[user]} size={80} />
                 </div>
                 <div className={classes.elementText}>

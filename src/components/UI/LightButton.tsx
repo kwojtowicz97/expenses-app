@@ -2,6 +2,8 @@ import classes from "./LightButton.module.css";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../store/auth";
 
 
 
@@ -14,12 +16,14 @@ const LigthButton: React.FC<{
     const [roomName, setRoomName] = useState(null);
 
   const navigate = useNavigate();
+  const authCtx = useContext(AuthContext)
+  console.log(roomName)
 
     useEffect(() => {
       const fetchRoomName = async (roomID) => {
         try {
           const response = await fetch(
-            `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}/name.json`
+            `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}.json`
           );
           if (!response.ok) {
             throw Error(response.statusText);
@@ -39,12 +43,15 @@ const LigthButton: React.FC<{
   }
 
   return (
-    <button
-      onClick={clickHandler}
-      className={`${classes.button} + ${props.owner && classes.owner}`}
-    >
-      {isLoaded ?  roomName  : <p>Loading...</p>}
-    </button>
+    roomName &&
+    Object.values(roomName["users"]).includes(authCtx.authData.localId) && (
+      <button
+        onClick={clickHandler}
+        className={`${classes.button} + ${props.owner && classes.owner}`}
+      >
+        {isLoaded ? roomName.name : <p>Loading...</p>}
+      </button>
+    )
   );
 };
 

@@ -7,10 +7,12 @@ import useFetchData from "../../hooks/useFetchData";
 import usePostData from "../../hooks/usePostData";
 import { useEffect } from "react";
 
+
 const RoomView: React.FC = () => {
   const { id } = useParams();
 
   const [isLoaded, setIsLoaded] = useState(false);
+
 
   const navigate = useNavigate();
   const [_postTransactionsResponse, isPosted, _isPostedError, doPost] =
@@ -89,7 +91,7 @@ const RoomView: React.FC = () => {
 
   return isLoaded ? (
     <>
-      <Header
+      <Header code={roomData.code}
         first={{
           symbol: ":",
           onClick: summarizeRoomHandler,

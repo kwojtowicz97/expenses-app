@@ -21,7 +21,23 @@
   align-items: center;
   position: relative;
 }
+
+.top h1 {
+  font-size: 2rem;
+  margin-left: 1rem;
+}
 .ownerMiniature {
+  grid-area: ownerMiniature;
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  align-self: center;
+  justify-self: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.userMiniature {
   grid-area: ownerMiniature;
   width: 4rem;
   height: 4rem;
@@ -32,11 +48,7 @@
   overflow: hidden;
 }
 
-.top h1 {
-  font-size: 1.4rem;
-  color: #6a6a6a;
-  margin-left: 1rem;
-}
+
 
 .amount {
   font-size: 3rem;
@@ -63,8 +75,8 @@ p {
   overflow: scroll;
 }
 
-/* 
-.list::-webkit-scrollbar { width: 0 !important } */
+
+.list::-webkit-scrollbar { width: 0 !important }
 
 .list li {
   display: flex;

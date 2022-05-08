@@ -18,10 +18,15 @@ import ExpenseDetail from "./components/expenseDetailView/expenseDetail";
 import NewRoomView from "./components/newRoomView/NewRoomView";
 import NewExpenseView from "./components/NewExpenseView/NewExpenseView";
 
+
 function App() {
   console.log("app")
   const appCtx = useContext(AppContext);
   const authCtx = useContext(AuthContext);
+
+
+  useEffect(() => authCtx.loginViaLocalStorage(), []);
+  
 
   return (
     <div className={classes.container}>
@@ -29,7 +34,12 @@ function App() {
       {appCtx.isError && <Modal />}
       <Router>
         <Routes>
-          <Route path="/detail/:roomID/:id" element={<ExpenseDetail />} />
+          <Route
+            path="/detail/:roomID/:id"
+            element={
+              !authCtx.authData ? <Navigate to="/login" /> : <ExpenseDetail />
+            }
+          />
           <Route
             path="/"
             element={
@@ -37,10 +47,25 @@ function App() {
             }
           />
           <Route path="/login" element={<LoginView />} />
-          <Route path="/:roomID/newexpense" element={<NewExpenseView />} />
-          <Route path="/newroom" element={<NewRoomView />} />
+          <Route
+            path="/:roomID/newexpense"
+            element={
+              !authCtx.authData ? <Navigate to="/login" /> : <NewExpenseView />
+            }
+          />
+          <Route
+            path="/newroom"
+            element={
+              !authCtx.authData ? <Navigate to="/login" /> : <NewRoomView />
+            }
+          />
           <Route path="/register" element={<NewAccountView />} />
-          <Route path="/room/:id" element={<RoomView />} />
+          <Route
+            path="/room/:id"
+            element={
+              !authCtx.authData ? <Navigate to="/login" /> : <RoomView />
+            }
+          />
         </Routes>
       </Router>
     </div>

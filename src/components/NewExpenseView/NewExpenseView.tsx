@@ -23,7 +23,7 @@ const NewExpenseView = () => {
   const [roomUsersData, setRoomUsersData] = useState(null);
   const [fetchedUsers, isUsersLoaded, isUsersError, doFetchUsers] =
     useFetchData(
-      `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}/users.json`
+      `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}.json`
     );
   const [
     fetchedUserNames,
@@ -41,7 +41,7 @@ const NewExpenseView = () => {
   useEffect(() => {
     if (!isUsersLoaded || isUsersError) return;
     const usersData = [];
-    for (const user of fetchedUsers) {
+    for (const user of Object.values(fetchedUsers.users)) {
       usersData.push({ userID: user, value: "0", isActive: true });
     }
     setRoomUsersData(usersData);
@@ -150,10 +150,15 @@ const NewExpenseView = () => {
       });
     }
   };
+  console.log(roomUsersData)
+  console.log(fetchedUserNames)
 
-  return (
+  return isUsersLoaded && isUsernamesLoaded ? (
     <>
-      <Header first={{ symbol: "+", onClick: fetchNewExpenseHandelr }}>
+      <Header
+        code={fetchedUsers.code}
+        first={{ symbol: "+", onClick: fetchNewExpenseHandelr }}
+      >
         New Expense
       </Header>
       {roomUsersData && isUsernamesLoaded ? (
@@ -172,15 +177,17 @@ const NewExpenseView = () => {
                 }`}</h1>
               </div>
               <div className={classes.amountDiv}>
-                <input
-                  value={roomUsersData
-                    .map((user) => +user.value)
-                    .reduce((a, b) => a + b)}
-                  onChange={setTotalAmountHandler}
-                  className={classes.amount}
-                  type="text"
-                  placeholder="0,00"
-                />
+                <div className={classes.amountContainer}>
+                  <input
+                    value={roomUsersData
+                      .map((user) => +user.value)
+                      .reduce((a, b) => a + b)}
+                    onChange={setTotalAmountHandler}
+                    className={classes.amount}
+                    type="text"
+                    placeholder="0,00"
+                  />
+                </div>
                 <div>zł</div>
               </div>
               <div className={classes.divider}></div>
@@ -189,8 +196,10 @@ const NewExpenseView = () => {
               </h1>
               <ul className={classes.list}>
                 {roomUsersData.map((user) => (
-                  <li key={user}>
-                    <div className={classes.ownerMiniature}></div>
+                  <li key={user.userID}>
+                    <div className={classes.userMiniature}>
+                      <Avatar user={fetchedUserNames[user.userID]} size={80} />
+                    </div>
                     <div className={classes.elementText}>
                       <p className={classes.name}>
                         {`${fetchedUserNames[user.userID].firstName} ${
@@ -199,6 +208,7 @@ const NewExpenseView = () => {
                       </p>
                       <div className={classes.smallAmountDiv}>
                         <input
+                          style={{ width: user.value.length + "ch" }}
                           readOnly={!user.isActive}
                           onChange={(e) => setUserValueHandler(e, user)}
                           className={classes.smallAmount}
@@ -224,6 +234,8 @@ const NewExpenseView = () => {
         <p>Loading...</p>
       )}
     </>
+  ) : (
+    <p>Loading...</p>
   );
 };
 
