@@ -7,12 +7,10 @@ import useFetchData from "../../hooks/useFetchData";
 import usePostData from "../../hooks/usePostData";
 import { useEffect } from "react";
 
-
 const RoomView: React.FC = () => {
   const { id } = useParams();
 
   const [isLoaded, setIsLoaded] = useState(false);
-
 
   const navigate = useNavigate();
   const [_postTransactionsResponse, isPosted, _isPostedError, doPost] =
@@ -40,6 +38,12 @@ const RoomView: React.FC = () => {
   }, [isPosted]);
 
   const summarizeRoomHandler = () => {
+    if (roomData.transactions) {
+      const transactions = []
+      doPost(transactions)
+      return
+
+    }
     const usersBalance: any = {};
 
     for (const [key, value] of Object.entries<any>(roomData.expenses)) {
@@ -56,13 +60,16 @@ const RoomView: React.FC = () => {
     }
     const transactions = [];
 
+    console.log(usersBalance);
+    console.log(Object.entries(usersBalance));
+
     let sortedBalance = Object.entries(usersBalance)
       .sort((_key, value) => Math.abs(+value))
       .reverse()
       .filter((user) => +user[1] !== 0);
     console.log(sortedBalance);
     while (sortedBalance.length !== 0) {
-      const balanceLen = sortedBalance.length - 1
+      const balanceLen = sortedBalance.length - 1;
 
       const transaction = {
         from:
@@ -76,7 +83,7 @@ const RoomView: React.FC = () => {
         amount: Math.abs(+sortedBalance[0][1]),
         isPaid: false,
       };
-      console.log(transaction)
+      console.log(transaction);
       transactions.push(transaction);
       sortedBalance[balanceLen][1] =
         +sortedBalance[balanceLen][1] + +sortedBalance[0][1];
@@ -91,7 +98,8 @@ const RoomView: React.FC = () => {
 
   return isLoaded ? (
     <>
-      <Header code={roomData.code}
+      <Header
+        code={roomData.code}
         first={{
           symbol: ":",
           onClick: summarizeRoomHandler,

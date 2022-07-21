@@ -56,42 +56,6 @@ const AppProvider: React.FC = (props) => {
 
 
 
-  // const fetchNewExpense = async (expense: Expense) => {
-  //   console.log(rooms)
-  //   console.log(Object.keys(rooms));
-  //   const indexOfRoom = Object.keys(rooms).find(
-  //     (key) => rooms[key].name === room.name
-  //   );
-  //   if (indexOfRoom === undefined) return
-  //   console.log(indexOfRoom)
-  //   try {
-  //     const response = await fetch(
-  //       `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${indexOfRoom}/expenses.json`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(expense),
-  //       }
-  //     );
-  //     await fetchRooms();
-  //     console.log(response)
-      
-  //     console.log(rooms)
-      
-  //     if (!response.ok) {
-  //       throw Error(response.statusText);
-  //     }
-  //     const data = await response.json();
-      
-  //     return data
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-    
-  // };
-
   return (
     <AppContext.Provider
       value={{

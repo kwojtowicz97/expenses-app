@@ -2,7 +2,6 @@ import Header from "../UI/Header";
 import classes from "./NewExpenseView.module.css";
 import { AuthContext } from "../../store/auth";
 import { useContext } from "react";
-import { AppContext } from "../../store/app";
 import { useParams } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
@@ -150,8 +149,8 @@ const NewExpenseView = () => {
       });
     }
   };
-  console.log(roomUsersData)
-  console.log(fetchedUserNames)
+  console.log(roomUsersData);
+  console.log(fetchedUserNames);
 
   return isUsersLoaded && isUsernamesLoaded ? (
     <>
@@ -165,16 +164,20 @@ const NewExpenseView = () => {
         <div className={classes.container}>
           {isUsersLoaded && (
             <div className={classes.expense}>
-              <div className={classes.top}>
-                <div className={classes.ownerMiniature}>
-                  <Avatar
-                    user={fetchedUserNames[authCtx.authData.localId]}
-                    size={80}
-                  />
-                </div>
-                <h1>{`${fetchedUserNames[authCtx.authData.localId].firstName} ${
-                  fetchedUserNames[authCtx.authData.localId].lastName
-                }`}</h1>
+              <div>
+                <div className={classes.top}>
+                  <div className={classes.ownerMiniature}>
+                    <Avatar
+                      user={fetchedUserNames[authCtx.authData.localId]}
+                      size={80}
+                    />
+                  </div>
+                  <h1>{`${
+                    fetchedUserNames[authCtx.authData.localId].firstName
+                  } ${
+                    fetchedUserNames[authCtx.authData.localId].lastName
+                  }`}</h1>
+                
               </div>
               <div className={classes.amountDiv}>
                 <div className={classes.amountContainer}>
@@ -192,8 +195,14 @@ const NewExpenseView = () => {
               </div>
               <div className={classes.divider}></div>
               <h1>
-                <input ref={roomNameRef} type="text" placeholder="Name" />
-              </h1>
+                <input
+                  ref={roomNameRef}
+                  type="text"
+                  placeholder="Expense name"
+                  maxLength={20}
+                  required
+                />
+              </h1></div>
               <ul className={classes.list}>
                 {roomUsersData.map((user) => (
                   <li key={user.userID}>
@@ -208,11 +217,14 @@ const NewExpenseView = () => {
                       </p>
                       <div className={classes.smallAmountDiv}>
                         <input
-                          style={{ width: user.value.length + "ch" }}
+                          style={{
+                            width:
+                              parseFloat(user.value).toFixed(2).length + "ch",
+                          }}
                           readOnly={!user.isActive}
                           onChange={(e) => setUserValueHandler(e, user)}
                           className={classes.smallAmount}
-                          value={user.value}
+                          value={parseFloat(user.value).toFixed(2)}
                           type="text"
                         />
                         <div>zł</div>

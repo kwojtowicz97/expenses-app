@@ -12,6 +12,7 @@ const RoomSummary: React.FC<{ roomData: any; roomID: string; users: any }> = (
         <div className={classes.cardTitle}>Summary</div>
         <div className={classes.transactions}>
           {roomData.transactions.map((transaction) => {
+            if (+transaction.amount <= 0.01) return
             return (
               <div
                 key={Math.random()}
@@ -36,7 +37,7 @@ const RoomSummary: React.FC<{ roomData: any; roomID: string; users: any }> = (
                 </div>
                 <div className={classes.transactionAmountAndBadge}>
                   <div className={classes.transactionAmount}>
-                    {transaction.amount}zł
+                    {parseFloat(transaction.amount).toFixed(2)}zł
                   </div>
                 </div>
               </div>

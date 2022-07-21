@@ -56,7 +56,7 @@ const ExpenseDetail: React.FC = (props) => {
                     className={classes.name}
                   >{`${usersData[user].firstName} ${usersData[user].lastName}`}</p>
                   <p className={classes.smallAmount}>
-                    {roomData.expenses[id].users[user]}zł
+                    {parseFloat(roomData.expenses[id].users[user]).toFixed(2)}zł
                   </p>
                 </div>
               </li>
