@@ -8,10 +8,12 @@ import InputGroup from "../UI/InputGroup";
 import { Navigate } from "react-router-dom";
 
 const LoginView: React.FC = () => {
+  console.log("login");
   const userInput = useRef<HTMLInputElement>(null);
   const passwordInput = useRef<HTMLInputElement>(null);
-  const authCtx = useContext(AuthContext);
+
   const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
 
   const clickHandler = () => {
     navigate("/register");
@@ -24,8 +26,8 @@ const LoginView: React.FC = () => {
 
   return (
     <>
-        {authCtx.isLoggedIn && <Navigate to={"/"}/>}
-      <Header>Login</Header>
+      {authCtx.authData && <Navigate to={"/"} />}
+      <Header code={false}>Login</Header>
       <form onSubmit={onLoginSubmit} className={classes.form}>
         <InputGroup id="user" label="E-Mail" type="text" pref={userInput} />
         <InputGroup

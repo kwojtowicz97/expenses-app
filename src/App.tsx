@@ -18,39 +18,65 @@ import ExpenseDetail from "./components/expenseDetailView/expenseDetail";
 import NewRoomView from "./components/newRoomView/NewRoomView";
 import NewExpenseView from "./components/NewExpenseView/NewExpenseView";
 
+
 function App() {
+  console.log("app")
   const appCtx = useContext(AppContext);
   const authCtx = useContext(AuthContext);
-  useEffect(() => authCtx.checkAndLogin(), []);
+
+
+  useEffect(() => authCtx.loginViaLocalStorage(), []);
+  
 
   return (
-    <div className={classes.container}>
-      <StatusIcon />
-      {appCtx.isError && <Modal />}
-      <Router>
-        <Routes>
-          <Route path="/detail" element={<ExpenseDetail />} />
-          <Route
-            path="/"
-            element={
-              !authCtx.isLoggedIn ? (
-                <Navigate to="/login" />
-              ) : (
-                <RoomSelectView />
-              )
-            }
-          />
-          <Route path="/login" element={<LoginView />} />
-          <Route path="/newexpense" element={<NewExpenseView />} />
-          <Route path="/newroom" element={<NewRoomView />} />
-          <Route path="/register" element={<NewAccountView />} />
-          <Route
-            path="/room"
-            element={appCtx.room ? <RoomView /> : <Navigate to="/" />}
-          />
-        </Routes>
-      </Router>
-    </div>
+      <div className={classes.container}>
+        <StatusIcon />
+        {appCtx.isError && <Modal />}
+        <Router>
+          <Routes>
+            <Route
+              path="/detail/:roomID/:id"
+              element={
+                !authCtx.authData ? <Navigate to="/login" /> : <ExpenseDetail />
+              }
+            />
+            <Route
+              path="/"
+              element={
+                !authCtx.authData ? (
+                  <Navigate to="/login" />
+                ) : (
+                  <RoomSelectView />
+                )
+              }
+            />
+            <Route path="/login" element={<LoginView />} />
+            <Route
+              path="/:roomID/newexpense"
+              element={
+                !authCtx.authData ? (
+                  <Navigate to="/login" />
+                ) : (
+                  <NewExpenseView />
+                )
+              }
+            />
+            <Route
+              path="/newroom"
+              element={
+                !authCtx.authData ? <Navigate to="/login" /> : <NewRoomView />
+              }
+            />
+            <Route path="/register" element={<NewAccountView />} />
+            <Route
+              path="/room/:id"
+              element={
+                !authCtx.authData ? <Navigate to="/login" /> : <RoomView />
+              }
+            />
+          </Routes>
+        </Router>
+      </div>
   );
 }
 

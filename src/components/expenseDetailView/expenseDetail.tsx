@@ -1,34 +1,62 @@
 import classes from "./expenseDetail.module.css";
-import { useContext } from "react";
-import { AppContext } from "../../store/app";
+import { useState } from "react";
 import Header from "../UI/Header";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import Avatar from "../UI/Avatar";
+import useFetchData from "../../hooks/useFetchData";
+import { AuthContext } from "../../store/auth";
+import { useContext } from "react";
 
 const ExpenseDetail: React.FC = (props) => {
-  const appCtx = useContext(AppContext);
-  const elements = appCtx.room.expenses;
-  console.log(elements);
-  return (
+  const { id, roomID } = useParams();
+  const [isLoaded, setIsLoaded] = useState(false)
+
+  const [roomData, isRoomDataLoaded, isRoomDataError, doFetch] = useFetchData(
+    `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${roomID}.json`
+  );
+
+  const [usersData, isUsernamesLoaded, isUserNamesError, doFetchUserNames] =
+    useFetchData(
+      `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/users.json`
+    );
+
+  useEffect(
+    () => setIsLoaded(isRoomDataLoaded && isUsernamesLoaded),
+    [isRoomDataLoaded, isUsernamesLoaded]
+  );
+
+
+  return isLoaded ? (
     <>
-      <Header>{appCtx.room.name}</Header>
+      <Header code={roomData.code}>{roomData.name}</Header>
       <div className={classes.container}>
         <div className={classes.expense}>
           <div className={classes.top}>
-            <div className={classes.ownerMiniature}></div>
-            <h1>{appCtx.expense.owner}</h1>
+            <div className={classes.ownerMiniature}>
+              <Avatar user={usersData[roomData.expenses[id].owner]} size={80} />
+            </div>
+            <h1>{`${usersData[roomData.expenses[id].owner].firstName} ${
+              usersData[roomData.expenses[id].owner].lastName
+            }`}</h1>
           </div>
           <div className={classes.amount}>
-            <p>{appCtx.expense.amount}zł</p>
+            <p>{roomData.expenses[id].amount}zł</p>
           </div>
           <div className={classes.divider}></div>
-          <h1>{appCtx.expense.name}</h1>
+          <h1>{roomData.expenses[id].name}</h1>
           <ul className={classes.list}>
-            {Object.keys(appCtx.expense.users).map((user) => (
-              <li>
-                <div className={classes.ownerMiniature}></div>
+            {Object.keys(roomData.expenses[id].users).map((user) => (
+              <li key={user}>
+                <div className={classes.userMiniature}>
+                  <Avatar user={usersData[user]} size={80} />
+                </div>
                 <div className={classes.elementText}>
-                  <p className={classes.name}>{user}</p>
+                  <p
+                    className={classes.name}
+                  >{`${usersData[user].firstName} ${usersData[user].lastName}`}</p>
                   <p className={classes.smallAmount}>
-                    {appCtx.expense.users[user]}zł
+                    {parseFloat(roomData.expenses[id].users[user]).toFixed(2)}zł
                   </p>
                 </div>
               </li>
@@ -37,6 +65,8 @@ const ExpenseDetail: React.FC = (props) => {
         </div>
       </div>
     </>
+  ) : (
+    <p>Loading...</p>
   );
 };
 

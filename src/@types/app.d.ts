@@ -6,28 +6,14 @@ export interface Room {
     users?: any[]
 }
 
-export interface Event {
-  item: Event;
-  date: string;
-  users: string[];
-  name: string;
-  owner: string
-  amount: string
-}
 
 export type AppContextType = {
   isError: boolean;
   error: string;
-  rooms: Room[];
-  room: Room;
-  expense: Event;
-  setExpense: (expense: Event) => void;
+  rooms: string[];
   setError: (error: string) => void;
   setIsError: (bool: boolean) => void;
   fetchRooms: () => void;
-  setRoom: (room: Room) => void;
-  fetchNewRoom: (name: string, owner: string) => Promise;
-  fetchNewExpense: (expense: Expense) => Promise;
 };
 
 

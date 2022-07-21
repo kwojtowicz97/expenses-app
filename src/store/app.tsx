@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Room, Event, AppContextType } from "../@types/app";
-import { Expense } from "../@types/app";
+import { AppContextType } from "../@types/app";
+
 
 export const AppContext = React.createContext<AppContextType | null>(null);
 
-const AppProvider: React.FC = (props) => {
+const AppProvider: React.FC = (props) => { 
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState(null);
-  const [rooms, setRooms] = useState<Room[] | null>([]);
-  const [room, setRoom] = useState<Room | null>(null);
-  const [expense, setExpense] = useState<Event | null>(null);
-
-  useEffect(() => console.log(room), [room]);
+  const [rooms, setRooms] = useState<string[] | null>([]);
+  const [expense, setExpense] = useState<any | null>(null);
+  
 
   const fetchNewRoom = async (roomName: string, owner: string) => {
     const room = {
@@ -35,10 +33,7 @@ const AppProvider: React.FC = (props) => {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      const data = await response.json();
-      setRoom(room);
-      console.log(room.users)
-      return data
+      await response.json();
     } catch (err) {
       console.log(err);
     }
@@ -47,46 +42,19 @@ const AppProvider: React.FC = (props) => {
   const fetchRooms = async () => {
     try {
       const response = await fetch(
-        "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json"
+        "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json?shallow=true"
       );
       if (!response.ok) {
         throw Error(response.statusText);
       }
       const items = await response.json();
-      setRooms(items);
+      setRooms(Object.keys(items));
     } catch (err) {
       console.log(err);
     }
   };
 
-  const fetchNewExpense = async (expense: Expense) => {
-    console.log(expense)
 
-    const indexOfRoom = Object.keys(rooms).find(
-      (key) => rooms[key] === room
-    );
-    console.log(indexOfRoom)
-    try {
-      const response = await fetch(
-        `https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms/${indexOfRoom}/expenses.json`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(expense),
-        }
-      );
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      const data = await response.json();
-      console.log(data)
-      return data
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <AppContext.Provider
@@ -94,15 +62,9 @@ const AppProvider: React.FC = (props) => {
         error,
         isError,
         rooms,
-        room,
-        expense,
         setError,
-        fetchNewExpense,
-        fetchNewRoom,
         setIsError,
         fetchRooms,
-        setRoom,
-        setExpense,
       }}
     >
       {props.children}

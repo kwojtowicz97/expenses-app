@@ -1,15 +1,33 @@
-import { useContext } from "react";
-import { AppContext } from "../../store/app";
 import Expense from "./Expense";
 import classes from "./ExpensesList.module.css";
+import RoomSummary from "./RoomSummary";
+import useFetchData from "../../hooks/useFetchData";
 
-const ExpensesList: React.FC = () => {
-  const appCtx = useContext(AppContext);
-  const room = appCtx.room
+
+const ExpensesList: React.FC<{
+  roomData: any;
+  roomID: string;
+  users: any
+}> = (props) => {
+  const {roomData, roomID, users} = props
   return (
     <div className={classes.expensesList}>
-      {room.expenses ?
-        Object.values(room.expenses).map((item) => <Expense item={item} amount={item.amount} date={item.date} name={item.name} owner={item.owner} users={Object.keys(item.users)}/>) : <p>There is no expenses yet</p>}
+      {roomData.transactions && (
+        <RoomSummary users={users} roomID={props.roomID} roomData={roomData} />
+      )}
+      {props.roomData.expenses ? (
+        Object.keys(props.roomData.expenses).map((item) => (
+          <Expense
+            users={users}
+            key={item}
+            expenseData={props.roomData.expenses[item]}
+            id={item}
+            roomID={props.roomID}
+          />
+        ))
+      ) : (
+        <p>There are no expenses yet</p>
+      )}
     </div>
   );
 };

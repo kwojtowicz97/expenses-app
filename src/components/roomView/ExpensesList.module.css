@@ -1,8 +1,8 @@
 .expensesList {
-    height: 85%;
+    flex: 1 1 auto;
     padding: 5%;
     position: relative;
-    overflow: scroll;
+    overflow-y: scroll;
 }
 
 .expensesList::-webkit-scrollbar { width: 0 !important }

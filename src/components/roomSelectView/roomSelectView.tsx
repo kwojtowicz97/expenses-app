@@ -1,29 +1,28 @@
-import React from "react"
-import Header from "../UI/Header"
+import React from "react";
+import Header from "../UI/Header";
 import RoomButtonGroup from "../UI/RoomButtonGroup";
-import { AppContext } from "../../store/app";
-import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useFetchData from "../../hooks/useFetchData";
 
+const fetchRoomsURL = "https://expensesapp-a0382-default-rtdb.europe-west1.firebasedatabase.app/rooms.json?shallow=true"
 
 const RoomSelectView: React.FC = () => {
+  const navigate = useNavigate();
+  const [response, isLoaded, isError, doFetch] = useFetchData(fetchRoomsURL);
 
-  const appCtx = useContext(AppContext)
-      const navigate = useNavigate();
-      const addRoomhandler = () => {
-        navigate("/newroom");
-      };
 
-  
+  return (
+    <>
+      <Header code={false} first={{ symbol: "+", onClick: () => navigate("/newroom") }}>
+        Select Room
+      </Header>
+      {isLoaded ? ( response ?
+        <RoomButtonGroup rooms={Object.keys(response)} /> : <p>There are no rooms yet</p>
+      ) : (
+        <p>Loading...</p>
+      )}
+    </>
+  );
+};
 
-  useEffect(() => appCtx.fetchRooms(), [])
-
-    return (
-      <>
-        <Header onClick={addRoomhandler}>Select Room</Header>
-        <RoomButtonGroup rooms={appCtx.rooms} />
-      </>
-    );
-}
-
-export default RoomSelectView
+export default RoomSelectView;
